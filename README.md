@@ -1,11 +1,11 @@
 <a name="banner"/>
 # The Crush test suite of l'Ecuyer for Julia
 
-## How I made work
-1. I installed testu01 on my machine such that ld could find it
-2. ld could not find the image of libRmath before I set LD_LIBRARY_PATH
-3. clang src/crushtests.c -ltestu01 -lRmath -I $HOME/git/julia/deps/random/ -L $HOME/git/julia/usr/lib
-4. ./a.out
+## How to build and run
+1. In deps/TestU01-1.2.3, do ./configure && make
+2. Edit the tests in crushtests.c
+3. make
+4. ./crushtests
 
 ## Homepage of the test suite
 http://www.iro.umontreal.ca/~simardr/testu01
