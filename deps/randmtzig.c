@@ -100,9 +100,9 @@ inline static double randu (void)
 
 /* ===== Ziggurat normal and exponential generators ===== */
 # define ZIGINT randmtzig_uint64_t
-# define EMANTISSA 2251799813685248  /* 52 bit mantissa */
+# define EMANTISSA 4503599627370496  /* 52 bit mantissa */
 # define ERANDI randi() /* 52 bits for mantissa */
-# define NMANTISSA EMANTISSA
+# define NMANTISSA 2251799813685248
 # define NRANDI randi() /* 51 bits for mantissa + 1 bit sign */
 # define RANDU randu()
 
@@ -243,7 +243,7 @@ double randmtzig_randn (void)
 {
   while (1)
     {
-      /* arbitrary mantissa (selected by NRANDI, with 1 bit for sign) */
+        /* arbitrary mantissa (selected by NRANDI, with 1 bit for sign) */
         const randmtzig_uint64_t r = NRANDI;
         const randmtzig_int64_t rabs=r>>1;
         const int idx = (int)(rabs&0xFF);
@@ -302,13 +302,15 @@ double randmtzig_exprnd (void)
 void randmtzig_fill_randn (double *p, randmtzig_idx_type n)
 {
      randmtzig_idx_type i;
-     for (i = 0; i < n; i++)  p[i] = randmtzig_randn();
+     for (i = 0; i < n; i++)
+          p[i] = randmtzig_randn();
 }
 
 void randmtzig_fill_exprnd (double *p, randmtzig_idx_type n)
 {
      randmtzig_idx_type i;
-     for (i = 0; i < n; i++)  p[i] = randmtzig_exprnd();
+     for (i = 0; i < n; i++)
+          p[i] = randmtzig_exprnd();
 }
 
 

@@ -27,17 +27,6 @@ double exprndtoU01(void)
 }
 // End Exponential
 
-// Naive exponential dist. Just to test that one works.
-double naive_exprnd(void)
-{
-	return -log(1.0 - randu());
-}
-double naive_exprndtoU01(void)
-{
-	return pexp(naive_exprnd());
-}
-// End Naive exp.
-
 int main (void)
 {
 	dsfmt_gv_init_gen_rand(117);
@@ -57,10 +46,6 @@ int main (void)
 
 	// Exponential distribution
 	gen = unif01_CreateExternGen01("randmtzig_exprnd", exprndtoU01);
-	bbattery_SmallCrush(gen); 		// 30 seconds test
-	unif01_DeleteExternGen01(gen);
-
-	gen = unif01_CreateExternGen01("naive_exprnd", naive_exprndtoU01);
 	bbattery_SmallCrush(gen); 		// 30 seconds test
 	unif01_DeleteExternGen01(gen);
 
