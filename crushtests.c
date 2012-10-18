@@ -1,5 +1,5 @@
 #include "./deps/TestU01-1.2.3/include/bbattery.h"
-#include "swrite.h"
+#include "./deps/TestU01-1.2.3/include/swrite.h"
 #include "./deps/dsfmt-2.2/dSFMT.c"
 #include "./deps/randmtzig.c"
 
