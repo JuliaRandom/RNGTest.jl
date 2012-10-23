@@ -1,4 +1,5 @@
 #include "./deps/TestU01-1.2.3/include/bbattery.h"
+#include "./deps/TestU01-1.2.3/include/sknuth.h"
 #include "./deps/TestU01-1.2.3/include/swrite.h"
 #include "./deps/dsfmt-2.2/dSFMT.c"
 #include "./deps/randmtzig.c"
@@ -42,6 +43,9 @@ int main (void)
 	// Normal ditribution
 	gen = unif01_CreateExternGen01("randmtzig_randn", randntoU01);
 	bbattery_SmallCrush(gen); 		// 30 seconds test
+	swrite_Basic = TRUE;
+	sknuth_Collision(gen, 0, 2, 10000000, 0, 1073741824, 1);
+	swrite_Basic = FALSE;
 	unif01_DeleteExternGen01(gen);
 
 	// Exponential distribution
