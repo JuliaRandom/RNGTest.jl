@@ -30,7 +30,7 @@ double exprndtoU01(void)
 
 int main (void)
 {
-	dsfmt_gv_init_gen_rand(117);
+	dsfmt_gv_init_gen_rand(SEED);
 	randmtzig_create_ziggurat_tables();
 	unif01_Gen *gen;
 	swrite_Basic = FALSE;
@@ -54,6 +54,6 @@ int main (void)
 	unif01_DeleteExternGen01(gen);
 
 	// bbattery_Crush (gen); 		// 2 hours test
-	// bbattery_Crush (gen);		// Many hours test
+	// bbattery_BigCrush (gen);		// Many hours test
 	return 0;
 }

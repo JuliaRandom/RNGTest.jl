@@ -1,5 +1,9 @@
+ifndef SEED
+	SEED=117
+endif
+
 all:
-	cc -O3 -finline-functions -fomit-frame-pointer crushtests.c -lm -I ./deps/TestU01-1.2.3/include/ -DDSFMT_MEXP=19937 -msse2 -DHAVE_SSE2 -o crushtests ./deps/TestU01-1.2.3/testu01/.libs/libtestu01.a ./deps/TestU01-1.2.3/probdist/.libs/libprobdist.a ./deps/TestU01-1.2.3/mylib/.libs/libmylib.a 
+	cc -DSEED=$(SEED) -O3 -finline-functions -fomit-frame-pointer crushtests.c -lm -I ./deps/TestU01-1.2.3/include/ -DDSFMT_MEXP=19937 -msse2 -DHAVE_SSE2 -o crushtests ./deps/TestU01-1.2.3/testu01/.libs/libtestu01.a ./deps/TestU01-1.2.3/probdist/.libs/libprobdist.a ./deps/TestU01-1.2.3/mylib/.libs/libmylib.a 
 
 clean:
 	rm -f crushtests *~
