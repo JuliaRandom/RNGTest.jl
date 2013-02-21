@@ -41,7 +41,7 @@
 #include "gofw.h"
 #include "statcoll.h"
 
-#include "fftc.c"
+#include "fftc.h"
 
 #include <math.h>
 #include <stdlib.h>

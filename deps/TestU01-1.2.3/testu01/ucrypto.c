@@ -512,4 +512,4 @@ void ucrypto_DeleteSHA1 (unif01_Gen * gen)
 /*=========================================================================*/
 /* Generator ISAAC */
 
-#include "ucryptoIS.c"
+// #include "ucryptoIS.c"

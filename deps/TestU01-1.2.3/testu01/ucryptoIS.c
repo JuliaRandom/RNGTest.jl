@@ -325,7 +325,7 @@ static void WrISAAC (void *junk) {
 
 /*-----------------------------------------------------------------------*/
 
-unif01_Gen * ucrypto_CreateISAAC (int flag, unsigned int A[]) {
+unif01_Gen * ucrypto_CreateISAAC (int flag, unsigned int A[256]) {
    ub4 i;
    unif01_Gen *gen;
    size_t leng;

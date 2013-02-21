@@ -34,9 +34,8 @@ CC                                                                 CC
 CC=================================================================CC
 */
 #include <math.h>
-rsrfft (x, m)
-double *x;
-int m;
+#include "fftc.h"
+void rsrfft (double *x, int m)
 {
    int n, is, id, i0, n2, n4, k;
    double t1;
@@ -63,7 +62,6 @@ int m;
       n4 = n2 / 4;
       rstage (n, n2, n4, &x[0], &x[n4], &x[2 * n4], &x[3 * n4]);
    }
-   return;
 }
 
 /*
@@ -75,9 +73,7 @@ C  Author                                                           C
 C       H.V. Sorensen,   University of Pennsylvania,  Mar. 1987     C
 C===================================================================C
 */
-rstage (n, n2, n4, x1, x2, x3, x4)
-int n, n2, n4;
-double *x1, *x2, *x3, *x4;
+void rstage (int n, int n2, int n4, double *x1, double *x2, double *x3, double *x4)
 {
    int n8, is, id, i1, i2, j, jn, i;
    double t1, t2, e, t3, t4, t5;
@@ -161,7 +157,6 @@ double *x1, *x2, *x3, *x4;
       ss3 = cc3 * sd3 + ss3 * cd3;
       cc3 = t3;
    }
-    /*C*/ return;
 }
 
 
@@ -183,9 +178,7 @@ CC      as this header is included.                                CC
 CC                                                                 CC
 CC=================================================================CC
 */
-rbitrev (x, m)
-double *x;
-int m;
+void rbitrev (double *x, int m)
 {
    int itab[66000];
    int m2, nbit, imax, lbss, i, j, k, l, j0;
@@ -220,5 +213,4 @@ int m;
          j = j0 + itab[l];
       }
    }
-   return;
 }
