@@ -6,39 +6,39 @@ else
 	SLIB = so
 endif
 
-OBJ = 	TestU01-1.2.3/testu01/unif01.c \
-		TestU01-1.2.3/testu01/swrite.c \
-		TestU01-1.2.3/testu01/bbattery.c \
-		TestU01-1.2.3/testu01/scomp.c \
-		TestU01-1.2.3/testu01/sknuth.c \
-		TestU01-1.2.3/testu01/smarsa.c \
-		TestU01-1.2.3/testu01/smultin.c \
-		TestU01-1.2.3/testu01/snpair.c \
-		TestU01-1.2.3/testu01/sres.c \
-		TestU01-1.2.3/testu01/sspectral.c \
-		TestU01-1.2.3/testu01/sstring.c \
-		TestU01-1.2.3/testu01/svaria.c \
-		TestU01-1.2.3/testu01/swalk.c \
-		TestU01-1.2.3/testu01/ufile.c \
-		TestU01-1.2.3/testu01/vectorsF2.c \
-		TestU01-1.2.3/mylib/chrono.c \
-		TestU01-1.2.3/mylib/gdef.c \
-		TestU01-1.2.3/mylib/num.c \
-		TestU01-1.2.3/mylib/util.c \
-		TestU01-1.2.3/mylib/bitset.c \
-		TestU01-1.2.3/mylib/mystr.c \
-		TestU01-1.2.3/mylib/tables.c \
-		TestU01-1.2.3/mylib/num2.c \
-		TestU01-1.2.3/probdist/gofw.c \
-		TestU01-1.2.3/probdist/fbar.c \
-		TestU01-1.2.3/probdist/fdist.c \
-		TestU01-1.2.3/probdist/gofs.c \
-		TestU01-1.2.3/probdist/fmass.c \
-		TestU01-1.2.3/probdist/statcoll.c \
-		TestU01-1.2.3/probdist/wdist.c
+OBJ = 	TestU01/src/unif01.c \
+		TestU01/src/swrite.c \
+		TestU01/src/bbattery.c \
+		TestU01/src/scomp.c \
+		TestU01/src/sknuth.c \
+		TestU01/src/smarsa.c \
+		TestU01/src/smultin.c \
+		TestU01/src/snpair.c \
+		TestU01/src/sres.c \
+		TestU01/src/sspectral.c \
+		TestU01/src/sstring.c \
+		TestU01/src/svaria.c \
+		TestU01/src/swalk.c \
+		TestU01/src/ufile.c \
+		TestU01/src/vectorsF2.c \
+		TestU01/src/chrono.c \
+		TestU01/src/gdef.c \
+		TestU01/src/num.c \
+		TestU01/src/util.c \
+		TestU01/src/bitset.c \
+		TestU01/src/mystr.c \
+		TestU01/src/tables.c \
+		TestU01/src/num2.c \
+		TestU01/src/gofw.c \
+		TestU01/src/fbar.c \
+		TestU01/src/fdist.c \
+		TestU01/src/gofs.c \
+		TestU01/src/fmass.c \
+		TestU01/src/statcoll.c \
+		TestU01/src/wdist.c
 
 all:
-	cc -shared -O2 $(OBJ) -o libtestu01wrapper.$(SLIB) -I TestU01-1.2.3/include -I TestU01-1.2.3/testu01
+	cc -shared -O2 $(OBJ) -o libtestu01wrapper.$(SLIB) -I TestU01/include
 
 clean:
 	rm *.dylib
