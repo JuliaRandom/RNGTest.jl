@@ -38,7 +38,7 @@ OBJ = 	TestU01/src/unif01.c \
 		TestU01/src/wdist.c
 
 all:
-	cc -shared -O2 $(OBJ) -o libtestu01wrapper.$(SLIB) -I TestU01/include
+	cc -shared -fPIC -O2 $(OBJ) -o libtestu01wrapper.$(SLIB) -I TestU01/include
 
 clean:
 	rm *.dylib
