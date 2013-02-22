@@ -1,7 +1,7 @@
 module TestU01
 	const libtestu01 = joinpath(Pkg.dir("TestU01"), "deps", "libtestu01wrapper")
 
-	for (snm, fnm) in ((:SmallCrush, :smallcrush), (:Crush, :crush), (:BigCrush, :bigcrush))
+	for (snm, fnm) in ((:SmallCrush, :smallcrush), (:Crush, :crush), (:BigCrush, :bigcrush), (:pseudoDIEHARD, :diehard), (:FIPS_140_2, :fips_140_2))
 		@eval begin
 			function $(fnm)(f::Function)
 				for i in 1:100
