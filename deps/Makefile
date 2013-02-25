@@ -36,7 +36,7 @@ OBJ = 	TestU01/src/unif01.c \
 		TestU01/src/fmass.c \
 		TestU01/src/statcoll.c \
 		TestU01/src/wdist.c \
-		TestU01/src/Extractors.c
+		TestU01/src/extractors.c
 
 all:
 	cc -shared -fPIC -O2 $(OBJ) -o libtestu01wrapper.$(SLIB) -I TestU01/include
