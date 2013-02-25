@@ -5,7 +5,7 @@ The package is a Julia interface to the test suite TestU01 of Pierre l'Ecuyer. T
 julia> RNGTest
 julia> RNGTest.smallcrush(rand)
 julia> using Distribtions
-julia> gf = cdf(Gamma(), rand(Gamma()));
+julia> gf() = cdf(Gamma(), rand(Gamma()));
 julia> RNGTest.crush(gf)
 ```
 
