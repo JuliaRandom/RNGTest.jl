@@ -1,8 +1,10 @@
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Darwin)
+	CC = gcc
 	SLIB = dylib
 else
+	CC = cc
 	SLIB = so
 endif
 
@@ -39,7 +41,7 @@ OBJ = 	TestU01/src/unif01.c \
 		TestU01/src/extractors.c
 
 all:
-	cc -shared -fPIC -O2 $(OBJ) -o libtestu01wrapper.$(SLIB) -I TestU01/include
+	$(CC) -shared -fPIC -O2 $(OBJ) -o libtestu01wrapper.$(SLIB) -I TestU01/include
 
 clean:
 	rm *.dylib

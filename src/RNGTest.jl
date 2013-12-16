@@ -1,6 +1,9 @@
 module RNGTest
 	const libtestu01 = joinpath(Pkg.dir("RNGTest"), "deps", "libtestu01wrapper")
 
+	swrite = cglobal(("swrite_Basic", libtestu01), Ptr{Bool})
+	unsafe_store!(swrite, 0, 1)
+
 	# Generator type
 	type Unif01
 		ptr::Ptr{Array{Int32}}
@@ -174,48 +177,6 @@ module RNGTest
 			end
 			$(fnm)(f::Function) = $(fnm)(f::Function, "")
 		end
-	end
-
-	function juliasmallcrush(f::Function, pval::FloatingPoint)
-		print("Test: ")
-		print("BirthdaySpacings: ")
-		println(smarsa_BirthdaySpacings(f, 1, 5000000, 0, 1073741824, 2, 1) < pval ? "Fail" : "OK")
-		
-		print("Test: ")
-		print("Collision: ")
-		println(sknuth_Collision(f, 1, 5000000, 0, 65536, 2) < pval ? "Fail" : "OK")
-
-		print("Test: ")
-		print("Gap: ")
-		println(sknuth_Gap(f, 1, 200000, 22, 0.0, .00390625) < pval ? "Fail" : "OK")
-
-		print("Test: ")
-		print("SimpPoker: ")
-		println(sknuth_SimpPoker(f, 1, 400000, 24, 64, 64) < pval ? "Fail" : "OK")
-
-		print("Test: ")
-		print("CouponCollector: ")
-		println(sknuth_CouponCollector(f, 1, 500000, 26, 16) < pval ? "Fail" : "OK")
-
-		print("Test: ")
-		print("MaxOft: ")
-		println(sknuth_MaxOft(f, 1, 2000000, 0, 100000, 6) < pval ? "Fail" : "OK")
-
-		print("Test: ")
-		print("WeightDistrib: ")
-		println(svaria_WeightDistrib(f, 1, 200000, 27, 256, 0.0, 0.125) < pval ? "Fail" : "OK")
-
-		print("Test: ")
-		print("MatrixRank: ")
-		println(smarsa_MatrixRank(f, 1, 20000, 20, 10, 60, 60) < pval ? "Fail" : "OK")
-
-		print("Test: ")
-		print("HammingIndep: ")
-		println(sstring_HammingIndep(f, 1, 500000, 20, 10, 300, 0) < pval ? "Fail" : "OK")
-
-		print("Test: ")
-		print("RandomWalk: ")
-		println(any(swalk_RandomWalk1(f, 1, 1000000, 0, 30, 150, 150) .< pval) ? "Fail" : "OK")
 	end
 end
 
