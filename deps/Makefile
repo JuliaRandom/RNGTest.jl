@@ -7,6 +7,8 @@ else
 	CC = cc
 	SLIB = so
 endif
+CFLAGS = -std=c99 -shared -fPIC -O2 -I TestU01/include
+
 
 OBJ = 	TestU01/src/unif01.c \
 		TestU01/src/swrite.c \
@@ -41,7 +43,7 @@ OBJ = 	TestU01/src/unif01.c \
 		TestU01/src/extractors.c
 
 all:
-	$(CC) -shared -fPIC -O2 $(OBJ) -o libtestu01wrapper.$(SLIB) -I TestU01/include
+	$(CC) $(CFLAGS) $(OBJ) -o libtestu01wrapper.$(SLIB)
 
 clean:
-	rm *.dylib
+	rm *.$(SLIB)

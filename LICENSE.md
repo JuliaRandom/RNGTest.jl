@@ -1,5 +1,5 @@
 # RNGTest
-Copyright (c) 2009-2013: Jeff Bezanson, Stefan Karpinski, Viral B. Shah, and other contributors:
+Copyright (c) 2013-2014: Andreas Noack Jensen
 
 https://github.com/JuliaLang/julia/contributors
 
@@ -11,19 +11,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 # TestU01
-Package: TestU01
-Environment: ANSI C
-Copyright (c) 2002 Pierre L'Ecuyer, Université de Montréal.
-Web address: http://www.iro.umontreal.ca/~lecuyer/
+Copyright (c) 2002 by Pierre L'Ecuyer,
+Université de Montréal.
+Web address: [http://www.iro.umontreal.ca/~lecuyer/]
 All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted without a fee for private, research, academic, or other non-commercial purposes. Any use of this software by a commercial enterprise requires a written licence from the copyright owner.
-
+ 
+Redistribution and use in source and binary forms, with or without modification, are permitted without a fee for private, research, academic, or other non-commercial purposes. Any use of this software in a commercial environment requires a written licence from the copyright owner.
+ 
 Any changes made to this package must be clearly identified as such.
-
-In scientific publications which used this software, one may give the citation as:
-P. L'Ecuyer and R. Simard, TestU01: A C Library for Empirical Testing of Random Number Generators, ACM Transactions on Mathematical Software, Vol. 33, 4, article 22, 2007.
-
-Redistributions of source code must retain this copyright notice and the following disclaimer.
-
-THIS PACKAGE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+In scientific publications which used this software, a reference to it would be appreciated.
+ 
+Redistributions of source code must retain this copyright notice and the following disclaimer:
+ 
+THIS PACKAGE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
