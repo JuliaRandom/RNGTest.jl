@@ -28,7 +28,7 @@ println("OK")
 
 print("Test: ")
 print("MaxOft: ")
-@test RNGTest.sknuth_MaxOft(f, 1, 2000000, 0, 100000, 6) > pval
+@test all(hcat(RNGTest.sknuth_MaxOft(f, 1, 2000000, 0, 100000, 6)...) .> pval)
 println("OK")
 
 print("Test: ")
@@ -43,10 +43,10 @@ println("OK")
 
 print("Test: ")
 print("HammingIndep: ")
-@test RNGTest.sstring_HammingIndep(f, 1, 500000, 20, 10, 300, 0) > pval
+@test RNGTest.sstring_HammingIndep(f, 1, 500000, 20, 10, 300, 0)[:Mean] > pval
 println("OK")
 
 print("Test: ")
 print("RandomWalk: ")
-@test all(RNGTest.swalk_RandomWalk1(f, 1, 1000000, 0, 30, 150, 150) .> pval)
+@test all(hcat(RNGTest.swalk_RandomWalk1(f, 1, 1000000, 0, 30, 150, 150)...) .> pval)
 println("OK")
