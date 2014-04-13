@@ -1,11 +1,15 @@
-UNAME := $(shell uname)
-
-ifeq ($(UNAME), Darwin)
+ifeq ($(OS), Windows_NT)
 	CC = gcc
-	SLIB = dylib
+	SLIB = dll
 else
-	CC = cc
-	SLIB = so
+	UNAME := $(shell uname)
+	ifeq ($(UNAME), Darwin)
+		CC = gcc
+		SLIB = dylib
+	else
+		CC = cc
+		SLIB = so
+	endif
 endif
 CFLAGS = -std=c99 -shared -fPIC -O2 -I TestU01/include
 
