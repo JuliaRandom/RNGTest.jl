@@ -1,6 +1,6 @@
 <a name="banner"/>
 # The Crush test suite of l'Ecuyer for Julia
-[![Build Status](https://travis-ci.org/andreasnoackjensen/RNGTest.jl.png)](https://travis-ci.org/andreasnoackjensen/RNGTest.jl)
+[![Build Status](https://travis-ci.org/andreasnoack/RNGTest.jl.png)](https://travis-ci.org/andreasnoack/RNGTest.jl)
 
 The package is a Julia interface to the test suite TestU01 of Pierre l'Ecuyer. All the tests included in the SmallCrush and BigCrush test batteries can be called as Julia functions. The first argument to the test function must be a function without arguments and it must return a `Float64` between zero and one. The output from the test is a p-value. The package also includes the Small- and the BigCrush batteries. Some examples:
 ```julia
