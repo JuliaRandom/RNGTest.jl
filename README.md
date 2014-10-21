@@ -13,4 +13,4 @@ julia> RNGTest.bigcrushJulia(gf)
 Note that the BigCrush test battery takes about twelve hours on a normal computer.
 
 ## Homepage of the test suite
-http://www.iro.umontreal.ca/~simardr/testu01
+http://simul.iro.umontreal.ca/testu01/tu01.html
