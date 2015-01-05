@@ -7,8 +7,9 @@ The first argument to the test function must be either
 
 * a function without arguments, which must return a `Float64` between zero and one, or
 
-* a wrapped `AbstractRNG` obtained via the function `wrap(rng, T)` where `T` is the
-   type of number one wants tested (currently `T` must be one of the standard
+* a wrapped `AbstractRNG` obtained via the function `wrap(rng, T)`
+   where `T` is the type of the variates produced by `rng` that one
+   wants tested (currently `T` must be one of the standard
    finite-precision Julia `Integer` or `FloatingPoint` types).
 
 The output from the test is a p-value.

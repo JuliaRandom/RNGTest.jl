@@ -9,6 +9,17 @@ module RNGTest
 
         # WrappedRNG
 
+        # TestU01 expects a standard function as input (created via
+        # cfunction here). When one wants to test the random stream of
+        # an AbstractRNG, a little more work has to be done before
+        # passing it to TestU01. The type WrappedRNG wraps an
+        # AbstractRNG into an object which knows which type of random
+        # numbers to produce, and also whether the scalar or array API
+        # should be used (this is useful when different algorithms are
+        # used for each case, which results in different streams which
+        # should be tested separately). Such an object can then be
+        # passed to the Unif01 constructor.
+
         typealias TestableNumbers Union(Base.IntTypes..., Float16, Float32, Float64)
 
         type WrappedRNG{T<:TestableNumbers, RNG<:AbstractRNG}
@@ -49,17 +60,17 @@ module RNGTest
             return g
         end
 
-        function callUnif01{T<:Integer}(g::WrappedRNG{T})
+        function call{T<:Integer}(g::WrappedRNG{T})
             g.idx+1 > length(g.vals) && fillcache(g)
             @inbounds return g.vals[g.idx+=1]
         end
 
-        function callUnif01(g::WrappedRNG{Float64})
+        function call(g::WrappedRNG{Float64})
             g.idx+1 > length(g.cache) && fillcache(g)
             @inbounds return g.cache[g.idx+=1]
         end
 
-        function callUnif01(g::WrappedRNG{Float32})
+        function call(g::WrappedRNG{Float32})
             g.idx+3 > length(g.cache) && fillcache(g)
             @inbounds begin
                 f = Float64(g.cache[g.idx+1])
@@ -70,7 +81,7 @@ module RNGTest
             end
         end
 
-        function callUnif01(g::WrappedRNG{Float16})
+        function call(g::WrappedRNG{Float16})
             g.idx+6 > length(g.cache) && fillcache(g)
             @inbounds begin
                 f = Float64(g.cache[g.idx+1])
@@ -104,14 +115,14 @@ module RNGTest
 
                 function Unif01{T<:FloatingPoint}(g::WrappedRNG{T}, genname)
                     # we assume that g being created out of an AbstractRNG, it produces Floats in the interval [0,1)
-                    @eval f() = callUnif01($g) :: Float64
+                    @eval f() = call($g) :: Float64
                     cf = cfunction(f, Float64, ())
                     return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Void}, (Ptr{Uint8}, Ptr{Void}), genname, cf), Float64)
                 end
 
                 function Unif01{T<:Integer}(g::WrappedRNG{T}, genname)
                     @assert Cuint === UInt32
-                    @eval f() = callUnif01($g) :: UInt32
+                    @eval f() = call($g) :: UInt32
                     cf = cfunction(f, UInt32, ())
                     return new(ccall((:unif01_CreateExternGenBits, libtestu01), Ptr{Void}, (Ptr{Uint8}, Ptr{Void}), genname, cf), UInt32)
                 end
