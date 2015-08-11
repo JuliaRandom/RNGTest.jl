@@ -1,4 +1,4 @@
 using Base.Test
 using RNGTest
 
-include("test/tests.jl")
+include("tests.jl")
