@@ -22,8 +22,8 @@ module RNGTest
     # should be tested separately). Such an object can then be
     # passed to the Unif01 constructor.
 
-    @compat typealias TestableNumbers Union(Int8, UInt8, Int16, UInt16, Int32, UInt32,
-        Int64, UInt64, Int128, UInt128, Float16, Float32, Float64)
+    @compat typealias TestableNumbers Union{Int8, UInt8, Int16, UInt16, Int32, UInt32,
+        Int64, UInt64, Int128, UInt128, Float16, Float32, Float64}
 
     type WrappedRNG{T<:TestableNumbers, RNG<:AbstractRNG}
         rng::RNG
@@ -111,24 +111,24 @@ module RNGTest
                 if tmp < 0 || tmp > 1 error("Function must return values on [0,1]") end
             end
             cf = cfunction(f, Float64, ())
-            b = new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Void}, (Ptr{Uint8}, Ptr{Void}), genname, cf), Float64)
+            @compat b = new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), Float64)
             #finalizer(b, delete) # TestU01 crashed if two unif01 object are generated. The only safe thing is to explicitly delete the object when used.
             return b
         end
 
-                function Unif01{T<:FloatingPoint}(g::WrappedRNG{T}, genname)
-                    # we assume that g being created out of an AbstractRNG, it produces Floats in the interval [0,1)
-                    @eval f() = call($g) :: Float64
-                    cf = cfunction(f, Float64, ())
-                    return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Void}, (Ptr{Uint8}, Ptr{Void}), genname, cf), Float64)
-                end
-
-                function Unif01{T<:Integer}(g::WrappedRNG{T}, genname)
-                    @assert Cuint === UInt32
-                    @eval f() = call($g) :: UInt32
-                    cf = cfunction(f, UInt32, ())
-                    return new(ccall((:unif01_CreateExternGenBits, libtestu01), Ptr{Void}, (Ptr{Uint8}, Ptr{Void}), genname, cf), UInt32)
-                end
+        @compat function Unif01{T<:AbstractFloat}(g::WrappedRNG{T}, genname)
+            # we assume that g being created out of an AbstractRNG, it produces Floats in the interval [0,1)
+            @eval f() = call($g) :: Float64
+            cf = cfunction(f, Float64, ())
+            @compat return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), Float64)
+        end
+        
+        function Unif01{T<:Integer}(g::WrappedRNG{T}, genname)
+            @assert Cuint === UInt32
+            @eval f() = call($g) :: UInt32
+            cf = cfunction(f, UInt32, ())
+            @compat return new(ccall((:unif01_CreateExternGenBits, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), UInt32)
+        end
     end
     function delete(obj::Unif01)
             if obj.gentype === Float64
@@ -138,7 +138,7 @@ module RNGTest
             end
     end
 
-        typealias Generator Union(Function, WrappedRNG)
+    @compat typealias Generator Union{Function, WrappedRNG}
 
     # Result types
 
@@ -825,7 +825,7 @@ module RNGTest
     ##################
     for (snm, fnm) in ((:SmallCrush, :smallcrushTestU01), (:Crush, :crushTestU01), (:BigCrush, :bigcrushTestU01), (:pseudoDIEHARD, :diehardTestU01), (:FIPS_140_2, :fips_140_2TestU01))
         @eval begin
-            function $(fnm)(f::Generator, fname::String)
+            function $(fnm)(f::Generator, fname::ByteString)
                 unif01 = Unif01(f, fname)
                 ccall(($(string("bbattery_", snm)), libtestu01), Void, (Ptr{Void},), unif01.ptr)
                 delete(unif01)
