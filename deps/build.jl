@@ -1,4 +1,3 @@
-p = pwd()
-cd(Pkg.dir("RNGTest/deps/"))
-run(`make`)
-cd(p)
+cd(dirname(@__FILE__)) do
+    run(`make`)
+end
