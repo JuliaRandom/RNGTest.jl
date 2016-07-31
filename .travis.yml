@@ -4,12 +4,10 @@ os:
   - linux
   - osx
 
-compiler:
-  - clang
-
 julia:
   - 0.3
   - 0.4
+  - 0.5
   - nightly
 
 notifications:
@@ -18,7 +16,7 @@ notifications:
       - andreasnoackjensen@gmail.com
     on_success: never
 
-script:
-  - julia -e 'Pkg.init(); Pkg.add("RNGTest")'
-  - julia -e 'using RNGTest; @assert isdefined(:RNGTest); @assert typeof(RNGTest) === Module'
-  - julia test/runtests.jl
+#script: # use the default script setting
+#  - julia -e 'Pkg.init(); Pkg.add("RNGTest")'
+#  - julia -e 'using RNGTest; @assert isdefined(:RNGTest); @assert typeof(RNGTest) === Module'
+#  - julia test/runtests.jl

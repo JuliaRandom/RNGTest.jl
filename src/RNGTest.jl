@@ -4,7 +4,7 @@ module RNGTest
 
     import Base: convert, getindex, pointer
 
-    const libtestu01 = joinpath(Pkg.dir("RNGTest"), "deps", "libtestu01wrapper")
+    const libtestu01 = joinpath(dirname(@__FILE__), "..", "deps", "libtestu01wrapper")
 
     swrite = cglobal(("swrite_Basic", libtestu01), Ptr{Bool})
     unsafe_store!(swrite, 0, 1)
