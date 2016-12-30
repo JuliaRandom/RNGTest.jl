@@ -1,6 +1,7 @@
 module RNGTest
 
     using Compat
+    import Compat.String
 
     import Base: convert, getindex, pointer
 
@@ -63,17 +64,17 @@ module RNGTest
         return g
     end
 
-    function call{T<:Integer}(g::WrappedRNG{T})
+    @compat function (g::WrappedRNG{T}){T<:Integer}()
         g.idx+1 > length(g.vals) && fillcache(g)
         @inbounds return g.vals[g.idx+=1]
     end
 
-    function call(g::WrappedRNG{Float64})
+    @compat function (g::WrappedRNG{Float64})()
         g.idx+1 > length(g.cache) && fillcache(g)
         @inbounds return g.cache[g.idx+=1]
     end
 
-    function call(g::WrappedRNG{Float32})
+    @compat function (g::WrappedRNG{Float32})()
         g.idx+3 > length(g.cache) && fillcache(g)
         @inbounds begin
             f = Float64(g.cache[g.idx+1])
@@ -84,7 +85,7 @@ module RNGTest
         end
     end
 
-    function call(g::WrappedRNG{Float16})
+    @compat function (g::WrappedRNG{Float16})()
         g.idx+6 > length(g.cache) && fillcache(g)
         @inbounds begin
             f = Float64(g.cache[g.idx+1])
@@ -103,7 +104,7 @@ module RNGTest
     type Unif01
         ptr::Ptr{Array{Int32}}
         gentype::Type
-        name::ASCIIString
+        name::String
         function Unif01(f::Function, genname)
             for i in 1:100
                 tmp = f()
@@ -118,14 +119,14 @@ module RNGTest
 
         @compat function Unif01{T<:AbstractFloat}(g::WrappedRNG{T}, genname)
             # we assume that g being created out of an AbstractRNG, it produces Floats in the interval [0,1)
-            @eval f() = call($g) :: Float64
+            @eval f() = ($g)() :: Float64
             cf = cfunction(f, Float64, ())
             @compat return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), Float64)
         end
-        
+
         function Unif01{T<:Integer}(g::WrappedRNG{T}, genname)
             @assert Cuint === UInt32
-            @eval f() = call($g) :: UInt32
+            @eval f() = ($g)() :: UInt32
             cf = cfunction(f, UInt32, ())
             @compat return new(ccall((:unif01_CreateExternGenBits, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), UInt32)
         end
@@ -825,7 +826,7 @@ module RNGTest
     ##################
     for (snm, fnm) in ((:SmallCrush, :smallcrushTestU01), (:Crush, :crushTestU01), (:BigCrush, :bigcrushTestU01), (:pseudoDIEHARD, :diehardTestU01), (:FIPS_140_2, :fips_140_2TestU01))
         @eval begin
-            function $(fnm)(f::Generator, fname::ByteString)
+            function $(fnm)(f::Generator, fname::String)
                 unif01 = Unif01(f, fname)
                 ccall(($(string("bbattery_", snm)), libtestu01), Void, (Ptr{Void},), unif01.ptr)
                 delete(unif01)

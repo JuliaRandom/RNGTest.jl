@@ -5,7 +5,6 @@ os:
   - osx
 
 julia:
-  - 0.3
   - 0.4
   - 0.5
   - nightly
@@ -14,7 +13,7 @@ notifications:
   email:
     recipients:
       - andreasnoackjensen@gmail.com
-    on_success: never
+    # on_success: never
 
 #script: # use the default script setting
 #  - julia -e 'Pkg.init(); Pkg.add("RNGTest")'
