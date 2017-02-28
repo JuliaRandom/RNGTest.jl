@@ -3,7 +3,7 @@ cd(dirname(@__FILE__)) do
         try
             run(`make`)
         catch
-            info("cannot run make, installing binary instead.")
+            info("Cannot run make, installing binary instead")
             if Sys.WORD_SIZE == 32
                 srcfile = "TestU01/bin/libtestu01wrapper-32.dll"
             else
