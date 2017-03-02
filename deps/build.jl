@@ -1,3 +1,5 @@
+using Compat
+
 cd(dirname(@__FILE__)) do
     if is_windows()
         try
