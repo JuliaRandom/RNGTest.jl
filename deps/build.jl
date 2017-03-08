@@ -11,7 +11,7 @@ cd(dirname(@__FILE__)) do
             else
                 binfile = "TestU01/bin/libtestu01wrapper-64.dll"
             end
-            cp(binfile, "libtestu01wrapper.dll")
+            cp(binfile, "libtestu01wrapper.dll", remove_destination=true)
         end
     else
         run(`make`)
