@@ -1,7 +1,6 @@
-<a name="banner"/>
 # The Crush test suite of l'Ecuyer for Julia
-[![Build Status](https://travis-ci.org/andreasnoack/RNGTest.jl.png)](https://travis-ci.org/andreasnoack/RNGTest.jl)
 
+[![Build Status](https://travis-ci.org/andreasnoack/RNGTest.jl.png)](https://travis-ci.org/andreasnoack/RNGTest.jl)
 [![RNGTest](http://pkg.julialang.org/badges/RNGTest_0.4.svg)](http://pkg.julialang.org/?pkg=RNGTest&ver=0.4)
 [![RNGTest](http://pkg.julialang.org/badges/RNGTest_0.5.svg)](http://pkg.julialang.org/?pkg=RNGTest&ver=0.5)
 

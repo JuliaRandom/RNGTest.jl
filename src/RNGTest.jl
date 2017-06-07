@@ -1,6 +1,7 @@
 module RNGTest
 
     using Compat
+    import Compat.String
 
     import Base: convert, getindex, pointer
 
