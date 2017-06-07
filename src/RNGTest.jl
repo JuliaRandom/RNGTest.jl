@@ -1,7 +1,6 @@
 module RNGTest
 
     using Compat
-    import Compat.String
 
     import Base: convert, getindex, pointer
 
@@ -23,7 +22,7 @@ module RNGTest
     # should be tested separately). Such an object can then be
     # passed to the Unif01 constructor.
 
-    @compat typealias TestableNumbers Union{Int8, UInt8, Int16, UInt16, Int32, UInt32,
+    const TestableNumbers = Union{Int8, UInt8, Int16, UInt16, Int32, UInt32,
         Int64, UInt64, Int128, UInt128, Float16, Float32, Float64}
 
     type WrappedRNG{T<:TestableNumbers, RNG<:AbstractRNG}
@@ -40,7 +39,7 @@ module RNGTest
         elseif T === Float16 && cache_size % 6 != 0 || T === Float32 && cache_size % 3 != 0
             error("cache_size must be a multiple of 3 (resp. 6) for Float32 (resp. Float16)")
         end
-        cache = Array(T, cache_size)
+        cache = Vector{T}(cache_size)
         fillcache(WrappedRNG{T, RNG}(rng, cache, fillarray,
             pointer_to_array(convert(Ptr{UInt32}, pointer(cache)), sizeof(cache)÷sizeof(UInt32)),
             0)) # 0 is a dummy value, which will be set correctly by fillcache
@@ -100,7 +99,7 @@ module RNGTest
     end
 
 
-    # Generator type
+    # RNGGenerator type
     type Unif01
         ptr::Ptr{Array{Int32}}
         gentype::Type
@@ -139,14 +138,14 @@ module RNGTest
             end
     end
 
-    @compat typealias Generator Union{Function, WrappedRNG}
+    const RNGGenerator = Union{Function, WrappedRNG}
 
     # Result types
 
     ## gofw
     immutable Gotw_TestArray
         data::Vector{Float64}
-        Gotw_TestArray() = new(Array(Float64, 11))
+        Gotw_TestArray() = new(Vector{Float64}(11))
     end
     function getindex(obj::Gotw_TestArray, i::Symbol)
         i == :KSP && return obj.data[1]
@@ -304,7 +303,7 @@ module RNGTest
     # Npairs
     immutable Snpair_StatArray
         data::Vector{Float64}
-        Snpair_StatArray() = new(Array(Float64, 11))
+        Snpair_StatArray() = new(Vector{Float64}(11))
     end
     function getindex(obj::Snpair_StatArray, i::Symbol)
         i == :NP && return obj.data[1]
@@ -453,7 +452,7 @@ module RNGTest
     # Tests #
     #########
     ## smarsa
-    function smarsa_BirthdaySpacings(gen::Generator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer, p::Integer)
+    function smarsa_BirthdaySpacings(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer, p::Integer)
          unif01 = Unif01(gen, "")
          sres = ResPoisson()
          ccall((:smarsa_BirthdaySpacings, libtestu01), Void,
@@ -464,7 +463,7 @@ module RNGTest
          delete(unif01)
          return pvalue(sres)
     end
-    function smarsa_GCD(gen::Generator, N::Integer, n::Integer, r::Integer, s::Integer)
+    function smarsa_GCD(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer)
          unif01 = Unif01(gen, "")
          sres = MarsaRes2(N)
          ccall((:smarsa_GCD, libtestu01), Void,
@@ -475,7 +474,7 @@ module RNGTest
          delete(unif01)
          return pvalue(sres)
     end
-    function smarsa_CollisionOver(gen::Generator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
+    function smarsa_CollisionOver(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
          unif01 = Unif01(gen, "")
          sres = MarsaRes()
          ccall((:smarsa_CollisionOver, libtestu01), Void,
@@ -486,7 +485,7 @@ module RNGTest
          delete(unif01)
          return pvalue(sres)
     end
-    function smarsa_Savir2(gen::Generator, N::Integer, n::Integer, r::Integer, m::Integer, t::Integer)
+    function smarsa_Savir2(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, m::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
         ccall((:smarsa_Savir2, libtestu01), Void,
@@ -497,7 +496,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function smarsa_SerialOver(gen::Generator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
+    function smarsa_SerialOver(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
          unif01 = Unif01(gen, "")
          sres = ResBasic()
          ccall((:smarsa_SerialOver, libtestu01), Void,
@@ -508,7 +507,7 @@ module RNGTest
          delete(unif01)
          return pvalue(sres)
     end
-    function smarsa_MatrixRank(gen::Generator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer, k::Integer)
+    function smarsa_MatrixRank(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer, k::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
         ccall((:smarsa_MatrixRank, libtestu01), Void,
@@ -521,7 +520,7 @@ module RNGTest
     end
 
     ## sknuth
-    function sknuth_Collision(gen::Generator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
+    function sknuth_Collision(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = KnuthRes2()
         ccall((:sknuth_Collision, libtestu01), Void,
@@ -532,7 +531,7 @@ module RNGTest
         delete(unif01)
          return pvalue(sres)
     end
-    function sknuth_CollisionPermut(gen::Generator, N::Integer, n::Integer, r::Integer, t::Integer)
+    function sknuth_CollisionPermut(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = KnuthRes2()
         ccall((:sknuth_CollisionPermut, libtestu01), Void,
@@ -543,7 +542,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sknuth_CouponCollector(gen::Generator, N::Integer, n::Integer, r::Integer, d::Integer)
+    function sknuth_CouponCollector(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
         ccall((:sknuth_CouponCollector, libtestu01), Void,
@@ -554,7 +553,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sknuth_Gap(gen::Generator, N::Integer, n::Integer, r::Integer, Alpha::Real, Beta::Real)
+    function sknuth_Gap(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, Alpha::Real, Beta::Real)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
         ccall((:sknuth_Gap, libtestu01), Void,
@@ -565,7 +564,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sknuth_MaxOft(gen::Generator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
+    function sknuth_MaxOft(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = KnuthRes1(N)
         ccall((:sknuth_MaxOft, libtestu01), Void,
@@ -576,7 +575,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sknuth_Permutation(gen::Generator, N::Integer, n::Integer, r::Integer, t::Integer)
+    function sknuth_Permutation(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
         ccall((:sknuth_Permutation, libtestu01), Void,
@@ -587,7 +586,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sknuth_Run(gen::Generator, N::Integer, n::Integer, r::Integer, up::Integer)
+    function sknuth_Run(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, up::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
         ccall((:sknuth_Run, libtestu01), Void,
@@ -598,7 +597,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sknuth_SimpPoker(gen::Generator, N::Integer, n::Integer, r::Integer, d::Integer, k::Integer)
+    function sknuth_SimpPoker(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, k::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
         ccall((:sknuth_SimpPoker, libtestu01), Void,
@@ -611,7 +610,7 @@ module RNGTest
     end
 
     ## svaria
-    function svaria_AppearanceSpacings(gen::Generator, N::Integer, Q::Integer, K::Integer, r::Integer, s::Integer, L::Integer)
+    function svaria_AppearanceSpacings(gen::RNGGenerator, N::Integer, Q::Integer, K::Integer, r::Integer, s::Integer, L::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
         ccall((:svaria_AppearanceSpacings, libtestu01), Void,
@@ -622,7 +621,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function svaria_SampleProd(gen::Generator, N::Integer, n::Integer, r::Integer, t::Integer)
+    function svaria_SampleProd(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
         ccall((:svaria_SampleProd, libtestu01), Void,
@@ -633,7 +632,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function svaria_SampleMean(gen::Generator, N::Integer, n::Integer, r::Integer)
+    function svaria_SampleMean(gen::RNGGenerator, N::Integer, n::Integer, r::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
         ccall((:svaria_SampleMean, libtestu01), Void,
@@ -644,7 +643,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function svaria_SampleCorr(gen::Generator, N::Integer, n::Integer, r::Integer, k::Integer)
+    function svaria_SampleCorr(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, k::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
         ccall((:svaria_SampleCorr, libtestu01), Void,
@@ -655,7 +654,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function svaria_SumCollector(gen::Generator, N::Integer, n::Integer, r::Integer, g::Float64)
+    function svaria_SumCollector(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, g::Float64)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
         ccall((:svaria_SumCollector, libtestu01), Void,
@@ -666,7 +665,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function svaria_WeightDistrib(gen::Generator, N::Integer, n::Integer, r::Integer, k::Integer, alpha::Real, beta::Real)
+    function svaria_WeightDistrib(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, k::Integer, alpha::Real, beta::Real)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
         ccall((:svaria_WeightDistrib, libtestu01), Void,
@@ -679,7 +678,7 @@ module RNGTest
     end
 
     ## sstring
-    function sstring_AutoCor(gen::Generator, N::Integer, n::Integer, r::Integer, s::Integer, d::Integer)
+    function sstring_AutoCor(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, d::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
         ccall((:sstring_AutoCor, libtestu01), Void,
@@ -690,7 +689,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sstring_HammingCorr(gen::Generator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer)
+    function sstring_HammingCorr(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer)
         unif01 = Unif01(gen, "")
         sres = StringRes()
         ccall((:sstring_HammingCorr, libtestu01), Void,
@@ -701,7 +700,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sstring_HammingIndep(gen::Generator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer, d::Integer)
+    function sstring_HammingIndep(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer, d::Integer)
         unif01 = Unif01(gen, "")
         sres = StringRes()
         ccall((:sstring_HammingIndep, libtestu01), Void,
@@ -712,7 +711,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sstring_HammingWeight2(gen::Generator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer)
+    function sstring_HammingWeight2(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
         ccall((:sstring_HammingWeight2, libtestu01), Void,
@@ -723,7 +722,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sstring_LongestHeadRun(gen::Generator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer)
+    function sstring_LongestHeadRun(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer)
         unif01 = Unif01(gen, "")
         sres = StringRes2(N)
         ccall((:sstring_LongestHeadRun, libtestu01), Void,
@@ -734,7 +733,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sstring_PeriodsInStrings(gen::Generator, N::Integer, n::Integer, r::Integer, s::Integer)
+    function sstring_PeriodsInStrings(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
         ccall((:sstring_PeriodsInStrings, libtestu01), Void,
@@ -745,7 +744,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function sstring_Run(gen::Generator, N::Integer, n::Integer, r::Integer, s::Integer)
+    function sstring_Run(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer)
         unif01 = Unif01(gen, "")
         sres = StringRes3(N)
         ccall((:sstring_Run, libtestu01), Void,
@@ -759,7 +758,7 @@ module RNGTest
 
 
     ## swalk
-    function swalk_RandomWalk1(gen::Generator, N::Integer, n::Integer, r::Integer, s::Integer, L0::Integer, L1::Integer)
+    function swalk_RandomWalk1(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L0::Integer, L1::Integer)
         unif01 = Unif01(gen, "")
         sres = WalkRes(N)
         ccall((:swalk_RandomWalk1, libtestu01), Void,
@@ -772,7 +771,7 @@ module RNGTest
     end
 
     ## snpair
-    function snpair_ClosePairs(gen::Generator, N::Integer, n::Integer, r::Integer, t::Integer, p::Integer, m::Integer)
+    function snpair_ClosePairs(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, t::Integer, p::Integer, m::Integer)
         unif01 = Unif01(gen, "")
         sres = NpairRes(N)
         ccall((:snpair_ClosePairs, libtestu01), Void,
@@ -785,7 +784,7 @@ module RNGTest
     end
 
     ## scomp
-    function scomp_LempelZiv(gen::Generator, N::Integer, k::Integer, r::Integer, s::Integer)
+    function scomp_LempelZiv(gen::RNGGenerator, N::Integer, k::Integer, r::Integer, s::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
         ccall((:scomp_LempelZiv, libtestu01), Void,
@@ -796,7 +795,7 @@ module RNGTest
         delete(unif01)
         return pvalue(sres)
     end
-    function scomp_LinearComp(gen::Generator, N::Integer, n::Integer, r::Integer, s::Integer)
+    function scomp_LinearComp(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer)
         unif01 = Unif01(gen, "")
         sres = CompRes(N)
         ccall((:scomp_LinearComp, libtestu01), Void,
@@ -809,7 +808,7 @@ module RNGTest
     end
 
     # sspectral
-    function sspectral_Fourier3(gen::Generator, N::Integer, k::Integer, r::Integer, s::Integer)
+    function sspectral_Fourier3(gen::RNGGenerator, N::Integer, k::Integer, r::Integer, s::Integer)
         unif01 = Unif01(gen, "")
         sres = SpectralRes()
         ccall((:sspectral_Fourier3, libtestu01), Void,
@@ -826,15 +825,15 @@ module RNGTest
     ##################
     for (snm, fnm) in ((:SmallCrush, :smallcrushTestU01), (:Crush, :crushTestU01), (:BigCrush, :bigcrushTestU01), (:pseudoDIEHARD, :diehardTestU01), (:FIPS_140_2, :fips_140_2TestU01))
         @eval begin
-            function $(fnm)(f::Generator, fname::String)
+            function $(fnm)(f::RNGGenerator, fname::String)
                 unif01 = Unif01(f, fname)
                 ccall(($(string("bbattery_", snm)), libtestu01), Void, (Ptr{Void},), unif01.ptr)
                 delete(unif01)
             end
-            $(fnm)(f::Generator) = $(fnm)(f::Generator, "")
+            $(fnm)(f::RNGGenerator) = $(fnm)(f::RNGGenerator, "")
         end
     end
-     function smallcrushJulia(f::Generator)
+     function smallcrushJulia(f::RNGGenerator)
          # @everywhere f = ()->g()
          testnames = [g->smarsa_BirthdaySpacings(g, 1, 5000000, 0, 1073741824, 2, 1),
                       g->sknuth_Collision(g, 1, 5000000, 0, 65536, 2),
@@ -848,7 +847,7 @@ module RNGTest
                       g->swalk_RandomWalk1(g, 1, 1000000, 0, 30, 150, 150)]
          return pmap(t->t(f), testnames)
      end
-     function bigcrushJulia(f::Generator)
+     function bigcrushJulia(f::RNGGenerator)
          testnames = [g->smarsa_SerialOver(g, 1, 10^9, 0, 2^8, 3)[:Mean],
                       g->smarsa_SerialOver(g, 1, 10^9, 22, 2^8, 3)[:Mean],
                       g->smarsa_CollisionOver(g, 30, 2*10^7, 0, 2^21, 2),
