@@ -1,8 +1,5 @@
 module RNGTest
 
-    using Compat
-    import Compat.String
-
     import Base: convert, getindex, pointer
 
     include("../deps/deps.jl")
@@ -26,7 +23,7 @@ module RNGTest
     const TestableNumbers = Union{Int8, UInt8, Int16, UInt16, Int32, UInt32,
         Int64, UInt64, Int128, UInt128, Float16, Float32, Float64}
 
-    type WrappedRNG{T<:TestableNumbers, RNG<:AbstractRNG}
+    mutable struct WrappedRNG{T<:TestableNumbers, RNG<:AbstractRNG}
         rng::RNG
         cache::Vector{T}
         fillarray::Bool
@@ -64,17 +61,17 @@ module RNGTest
         return g
     end
 
-    @compat function (g::WrappedRNG{T}){T<:Integer}()
+    function (g::WrappedRNG{T}){T<:Integer}()
         g.idx+1 > length(g.vals) && fillcache(g)
         @inbounds return g.vals[g.idx+=1]
     end
 
-    @compat function (g::WrappedRNG{Float64})()
+    function (g::WrappedRNG{Float64})()
         g.idx+1 > length(g.cache) && fillcache(g)
         @inbounds return g.cache[g.idx+=1]
     end
 
-    @compat function (g::WrappedRNG{Float32})()
+    function (g::WrappedRNG{Float32})()
         g.idx+3 > length(g.cache) && fillcache(g)
         @inbounds begin
             f = Float64(g.cache[g.idx+1])
@@ -85,7 +82,7 @@ module RNGTest
         end
     end
 
-    @compat function (g::WrappedRNG{Float16})()
+    function (g::WrappedRNG{Float16})()
         g.idx+6 > length(g.cache) && fillcache(g)
         @inbounds begin
             f = Float64(g.cache[g.idx+1])
@@ -100,8 +97,8 @@ module RNGTest
     end
 
 
-    # RNGGenerator type
-    type Unif01
+    # RNGGenerator struct
+    mutable struct Unif01
         ptr::Ptr{Array{Int32}}
         gentype::Type
         name::String
@@ -112,23 +109,23 @@ module RNGTest
                 if tmp < 0 || tmp > 1 error("Function must return values on [0,1]") end
             end
             cf = cfunction(f, Float64, ())
-            @compat b = new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), Float64)
+            b = new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), Float64)
             #finalizer(b, delete) # TestU01 crashed if two unif01 object are generated. The only safe thing is to explicitly delete the object when used.
             return b
         end
 
-        @compat function Unif01{T<:AbstractFloat}(g::WrappedRNG{T}, genname)
+        function Unif01{T<:AbstractFloat}(g::WrappedRNG{T}, genname)
             # we assume that g being created out of an AbstractRNG, it produces Floats in the interval [0,1)
             @eval f() = ($g)() :: Float64
             cf = cfunction(f, Float64, ())
-            @compat return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), Float64)
+            return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), Float64)
         end
 
         function Unif01{T<:Integer}(g::WrappedRNG{T}, genname)
             @assert Cuint === UInt32
             @eval f() = ($g)() :: UInt32
             cf = cfunction(f, UInt32, ())
-            @compat return new(ccall((:unif01_CreateExternGenBits, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), UInt32)
+            return new(ccall((:unif01_CreateExternGenBits, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), UInt32)
         end
     end
     function delete(obj::Unif01)
@@ -144,7 +141,7 @@ module RNGTest
     # Result types
 
     ## gofw
-    immutable Gotw_TestArray
+    struct Gotw_TestArray
         data::Vector{Float64}
         Gotw_TestArray() = new(Vector{Float64}(11))
     end
@@ -189,7 +186,7 @@ module RNGTest
     # Sres
     # Basic
     ## Type
-    type ResBasic
+    mutable struct ResBasic
         ptr::Ptr{Void}
         function ResBasic()
             res = new(ccall((:sres_CreateBasic, libtestu01), Ptr{Void}, (), ))
@@ -210,7 +207,7 @@ module RNGTest
 
     # Chi2
     ## Type
-    type ResChi2
+    mutable struct ResChi2
         ptr::Ptr{Void}
         N::Int
         function ResChi2(N::Integer)
@@ -232,7 +229,7 @@ module RNGTest
 
     # sknuth
     ## Type
-    type KnuthRes1
+    mutable struct KnuthRes1
         ptr::Ptr{Void}
         N::Int
         function KnuthRes1(N::Integer)
@@ -255,7 +252,7 @@ module RNGTest
 
     # smarsa
     ## Type
-    type MarsaRes2
+    mutable struct MarsaRes2
         ptr::Ptr{Void}
         N::Int
         function MarsaRes2(N::Integer)
@@ -277,7 +274,7 @@ module RNGTest
 
     # Walk
     ## Type
-    type WalkRes
+    mutable struct WalkRes
         ptr::Ptr{Void}
         N::Int
         function WalkRes(N::Integer)
@@ -302,7 +299,7 @@ module RNGTest
     end
 
     # Npairs
-    immutable Snpair_StatArray
+    struct Snpair_StatArray
         data::Vector{Float64}
         Snpair_StatArray() = new(Vector{Float64}(11))
     end
@@ -321,7 +318,7 @@ module RNGTest
         throw(BoundsError())
     end
     ## Type
-    type NpairRes
+    mutable struct NpairRes
         ptr::Ptr{Void}
         N::Int
         function NpairRes(N::Integer)
@@ -343,7 +340,7 @@ module RNGTest
 
     # scomp
     ## Type
-    type CompRes
+    mutable struct CompRes
         ptr::Ptr{Void}
         N::Int
         function CompRes(N::Integer)
@@ -366,7 +363,7 @@ module RNGTest
 
     # sspectral
     ## Type
-    type SpectralRes
+    mutable struct SpectralRes
         ptr::Ptr{Void}
         function SpectralRes()
             res = new(ccall((:sspectral_CreateRes, libtestu01), Ptr{Void}, (), ))
@@ -387,7 +384,7 @@ module RNGTest
 
     # sstring
     ## Type
-    type StringRes
+    mutable struct StringRes
         ptr::Ptr{Void}
         function StringRes()
             res = new(ccall((:sstring_CreateRes, libtestu01), Ptr{Void}, (), ))
@@ -407,7 +404,7 @@ module RNGTest
     end
 
     ## Type
-    type StringRes2
+    mutable struct StringRes2
         ptr::Ptr{Void}
         N::Int
         function StringRes2(N::Integer)
@@ -428,7 +425,7 @@ module RNGTest
     end
 
     ## Type
-    type StringRes3
+    mutable struct StringRes3
         ptr::Ptr{Void}
         N::Int
         function StringRes3(N::Integer)
