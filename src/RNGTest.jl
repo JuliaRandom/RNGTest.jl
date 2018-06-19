@@ -5,7 +5,7 @@ module RNGTest
 
     import Base: convert, getindex, pointer
 
-    const libtestu01 = joinpath(dirname(@__FILE__), "..", "deps", "libtestu01wrapper")
+    include("../deps/deps.jl")
 
     swrite = cglobal(("swrite_Basic", libtestu01), Ptr{Bool})
     unsafe_store!(swrite, 0, 1)
@@ -182,7 +182,7 @@ module RNGTest
                 ccall(($(string(sDelete)), libtestu01), Void, (Ptr{Void},), obj.ptr)
             end
             # pvalue extractors
-            pvalue(obj::$t) = ccall(($(string(sPval)), libtestu01), Float64, (Ptr{Void},), obj.ptr)
+            pvalue(obj::$t) = ccall(($(string(sPval)), libtestu01extractors), Float64, (Ptr{Void},), obj.ptr)
         end
     end
 
@@ -204,7 +204,7 @@ module RNGTest
     ## pvalue extractors
     function pvalue(obj::ResBasic)
         res = Gotw_TestArray()
-        ccall((:getPValBasic, libtestu01), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
+        ccall((:getPValBasic, libtestu01extractors), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
         return res
     end
 
@@ -226,7 +226,7 @@ module RNGTest
     ## pvalue extractors
     function pvalue(obj::ResChi2)
         res = Gotw_TestArray()
-        ccall((:getPValChi2, libtestu01), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
+        ccall((:getPValChi2, libtestu01extractors), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
         return res[obj.N == 1 ? :Mean : :Sum]
     end
 
@@ -249,7 +249,7 @@ module RNGTest
     function pvalue(obj::KnuthRes1)
         chi = Gotw_TestArray()
         bas = Gotw_TestArray()
-        ccall((:getPValRes1, libtestu01), Void, (Ptr{Void}, Ptr{Float64}, Ptr{Float64}), obj.ptr, chi.data, bas.data)
+        ccall((:getPValRes1, libtestu01extractors), Void, (Ptr{Void}, Ptr{Float64}, Ptr{Float64}), obj.ptr, chi.data, bas.data)
         return chi[obj.N == 1 ? :Mean : :Sum], bas[obj.N == 1 ? :Mean : :AD]
     end
 
@@ -271,7 +271,7 @@ module RNGTest
     ## pvalue extractors
     function pvalue(obj::MarsaRes2)
         res = Gotw_TestArray()
-        ccall((:getPValSmarsa2, libtestu01), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
+        ccall((:getPValSmarsa2, libtestu01extractors), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
         return obj.N == 1 ? res[:Mean] : res[:Sum]
     end
 
@@ -297,7 +297,7 @@ module RNGTest
         pJ = Gotw_TestArray()
         pR = Gotw_TestArray()
         pC = Gotw_TestArray()
-        ccall((:getPVal_Walk, libtestu01), Void, (Ptr{Void}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}), obj.ptr, pH.data, pM.data, pJ.data, pR.data, pC.data)
+        ccall((:getPVal_Walk, libtestu01extractors), Void, (Ptr{Void}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}), obj.ptr, pH.data, pM.data, pJ.data, pR.data, pC.data)
         return obj.N == 1 ? (pH[:Mean], pM[:Mean], pJ[:Mean], pR[:Mean], pC[:Mean]) : (pH[:Sum], pM[:Sum], pJ[:Sum], pR[:Sum], pC[:Sum])
     end
 
@@ -337,7 +337,7 @@ module RNGTest
     ## pvalue extractors
     function pvalue(obj::NpairRes)
         res = Snpair_StatArray()
-        ccall((:getPVal_Npairs, libtestu01), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
+        ccall((:getPVal_Npairs, libtestu01extractors), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
         return obj.N == 1 ? (res[:NP], res[:mNP]) : (res[:NP], res[:mNP1], res[:mNP2], res[:NJumps])
     end
 
@@ -360,7 +360,7 @@ module RNGTest
     function pvalue(obj::CompRes)
         num = Gotw_TestArray()
         size = Gotw_TestArray()
-        ccall((:getPValScomp, libtestu01), Void, (Ptr{Void}, Ptr{Float64}, Ptr{Float64}), obj.ptr, num.data, size.data)
+        ccall((:getPValScomp, libtestu01extractors), Void, (Ptr{Void}, Ptr{Float64}, Ptr{Float64}), obj.ptr, num.data, size.data)
         return num[obj.N == 1 ? :Mean : :Sum], size[obj.N == 1 ? :Mean : :Sum]
     end
 
@@ -381,7 +381,7 @@ module RNGTest
     ## pvalue extractors
     function pvalue(obj::SpectralRes)
         res = Gotw_TestArray()
-        ccall((:getPValSspectral, libtestu01), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
+        ccall((:getPValSspectral, libtestu01extractors), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
         return res[:AD]
     end
 
@@ -402,7 +402,7 @@ module RNGTest
     ## pvalue extractors
     function pvalue(obj::StringRes)
         res = Gotw_TestArray()
-        ccall((:getPValStringRes, libtestu01), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
+        ccall((:getPValStringRes, libtestu01extractors), Void, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
         return res
     end
 
@@ -423,7 +423,7 @@ module RNGTest
     ## pvalue extractors
     function pvalue(obj::StringRes2)
         res = Gotw_TestArray()
-        res2 = ccall((:getPValStringRes2, libtestu01), Float64, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
+        res2 = ccall((:getPValStringRes2, libtestu01extractors), Float64, (Ptr{Void}, Ptr{Float64}), obj.ptr, res.data)
         return res[obj.N == 1 ? :Mean : :Sum], res2
     end
 
@@ -445,7 +445,7 @@ module RNGTest
     function pvalue(obj::StringRes3)
         res1 = Gotw_TestArray()
         res2 = Gotw_TestArray()
-        ccall((:getPValStringRes3, libtestu01), Float64, (Ptr{Void}, Ptr{Float64}, Ptr{Float64}), obj.ptr, res1.data, res2.data)
+        ccall((:getPValStringRes3, libtestu01extractors), Float64, (Ptr{Void}, Ptr{Float64}, Ptr{Float64}), obj.ptr, res1.data, res2.data)
         return res1[obj.N == 1 ? :Mean : :Sum], res2[obj.N == 1 ? :Mean : :Sum]
     end
 
