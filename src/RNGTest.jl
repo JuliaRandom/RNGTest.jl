@@ -1,11 +1,17 @@
+__precompile__()
+
 module RNGTest
 
     import Base: convert, getindex, pointer
 
     include("../deps/deps.jl")
 
-    swrite = cglobal(("swrite_Basic", libtestu01), Ptr{Bool})
-    unsafe_store!(swrite, 0, 1)
+    swrite = Ref{Ptr{Ptr{Bool}}}()
+
+    function __init__()
+        swrite[] = cglobal(("swrite_Basic", libtestu01), Ptr{Bool})
+        unsafe_store!(swrite[], 0, 1)
+    end
 
     # WrappedRNG
 
