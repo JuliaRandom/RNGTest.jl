@@ -37,7 +37,7 @@ module RNGTest
         idx::Int
     end
 
-    function WrappedRNG{RNG, T}(rng::RNG, ::Type{T}, fillarray = true, cache_size = 3*2^11 ÷ sizeof(T))
+    function WrappedRNG(rng::RNG, ::Type{T}, fillarray = true, cache_size = 3*2^11 ÷ sizeof(T)) where {RNG, T}
         if T <: Integer && cache_size*sizeof(T) % sizeof(UInt32) != 0
             error("cache_size must be a multiple of $(Int(4/sizeof(T))) (for type $T)")
         elseif T === Float16 && cache_size % 6 != 0 || T === Float32 && cache_size % 3 != 0
@@ -53,9 +53,9 @@ module RNGTest
     # when one wants to test different code path of the particular RNG implementations, like
     # MersenneTwister from Base.
     # For now let's document only the type parameter in the wrap function:
-    wrap{T<:TestableNumbers}(rng::AbstractRNG, ::Type{T}) = WrappedRNG(rng, T)
+    wrap(rng::AbstractRNG, ::Type{T}) where {T<:TestableNumbers} = WrappedRNG(rng, T)
 
-    function fillcache{T}(g::WrappedRNG{T})
+    function fillcache(g::WrappedRNG{T}) where T
         if g.fillarray
             rand!(g.rng, g.cache)
         else
@@ -67,7 +67,7 @@ module RNGTest
         return g
     end
 
-    function (g::WrappedRNG{T}){T<:Integer}()
+    function (g::WrappedRNG{T})() where T<:Integer
         g.idx+1 > length(g.vals) && fillcache(g)
         @inbounds return g.vals[g.idx+=1]
     end
@@ -172,7 +172,7 @@ module RNGTest
          (:KnuthRes2, :sknuth_CreateRes2, :sknuth_DeleteRes2, :getPValRes2))
         @eval begin
             # The types
-            type $t
+            mutable struct $t
                 ptr::Ptr{Void}
                 function $(t)()
                     res = new(ccall(($(string(sCreate)), libtestu01), Ptr{Void}, (), ))
