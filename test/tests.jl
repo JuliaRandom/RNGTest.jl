@@ -50,3 +50,6 @@ print("Test: ")
 print("RandomWalk: ")
 @test all(hcat(RNGTest.swalk_RandomWalk1(f, 1, 1000000, 0, 30, 150, 150)...) .> pval)
 println("OK")
+
+rng = RNGTest.wrap(MersenneTwister(0), UInt32)
+RNGTest.smallcrushTestU01(rng)
