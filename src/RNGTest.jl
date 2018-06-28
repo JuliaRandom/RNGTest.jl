@@ -45,7 +45,7 @@ module RNGTest
         end
         cache = Vector{T}(cache_size)
         fillcache(WrappedRNG{T, RNG}(rng, cache, fillarray,
-            pointer_to_array(convert(Ptr{UInt32}, pointer(cache)), sizeof(cache)÷sizeof(UInt32)),
+            unsafe_wrap(Array, convert(Ptr{UInt32}, pointer(cache)), sizeof(cache)÷sizeof(UInt32)),
             0)) # 0 is a dummy value, which will be set correctly by fillcache
     end
 
