@@ -45,7 +45,7 @@ module RNGTest
         end
         cache = Vector{T}(cache_size)
         fillcache(WrappedRNG{T, RNG}(rng, cache, fillarray,
-            pointer_to_array(convert(Ptr{UInt32}, pointer(cache)), sizeof(cache)÷sizeof(UInt32)),
+            unsafe_wrap(Array, convert(Ptr{UInt32}, pointer(cache)), sizeof(cache)÷sizeof(UInt32)),
             0)) # 0 is a dummy value, which will be set correctly by fillcache
     end
 
@@ -105,7 +105,7 @@ module RNGTest
 
     # RNGGenerator struct
     mutable struct Unif01
-        ptr::Ptr{Array{Int32}}
+        ptr::Ptr{Void}
         gentype::Type
         name::String
         function Unif01(f::Function, genname)
@@ -120,14 +120,14 @@ module RNGTest
             return b
         end
 
-        function Unif01{T<:AbstractFloat}(g::WrappedRNG{T}, genname)
+        function Unif01(g::WrappedRNG{T}, genname) where {T<:AbstractFloat}
             # we assume that g being created out of an AbstractRNG, it produces Floats in the interval [0,1)
             @eval f() = ($g)() :: Float64
             cf = cfunction(f, Float64, ())
             return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Void}, (Ptr{UInt8}, Ptr{Void}), genname, cf), Float64)
         end
 
-        function Unif01{T<:Integer}(g::WrappedRNG{T}, genname)
+        function Unif01(g::WrappedRNG{T}, genname) where {T<:Integer}
             @assert Cuint === UInt32
             @eval f() = ($g)() :: UInt32
             cf = cfunction(f, UInt32, ())
