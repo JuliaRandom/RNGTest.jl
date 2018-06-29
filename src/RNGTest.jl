@@ -117,21 +117,20 @@ module RNGTest
                 if tmp < 0 || tmp > 1 error("Function must return values on [0,1]") end
             end
             cf = @cfunction($f, Float64, ())
-            b = new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Cvoid}, (Ptr{UInt8}, Ptr{Cvoid}), genname, cf), Float64)
-            #finalizer(b, delete) # TestU01 crashed if two unif01 object are generated. The only safe thing is to explicitly delete the object when used.
-            return b
+            # TestU01 crashed if two unif01 object are generated. The only safe thing is to explicitly delete the object when used instead of using finalizers
+            return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Cvoid}, (Ptr{UInt8}, Ptr{Cvoid}), genname, cf), Float64, genname)
         end
 
         function Unif01(g::WrappedRNG{T}, genname) where {T<:AbstractFloat}
             # we assume that g being created out of an AbstractRNG, it produces Floats in the interval [0,1)
             cf = @cfunction($g, Float64, ())
-            return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Cvoid}, (Ptr{UInt8}, Ptr{Cvoid}), genname, cf), Float64)
+            return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Cvoid}, (Ptr{UInt8}, Ptr{Cvoid}), genname, cf), Float64, genname)
         end
 
         function Unif01(g::WrappedRNG{T}, genname) where {T<:Integer}
             @assert Cuint === UInt32
             cf = @cfunction($g, UInt32, ())
-            return new(ccall((:unif01_CreateExternGenBits, libtestu01), Ptr{Cvoid}, (Ptr{UInt8}, Ptr{Cvoid}), genname, cf), UInt32)
+            return new(ccall((:unif01_CreateExternGenBits, libtestu01), Ptr{Cvoid}, (Ptr{UInt8}, Ptr{Cvoid}), genname, cf), UInt32, genname)
         end
     end
     function delete(obj::Unif01)
