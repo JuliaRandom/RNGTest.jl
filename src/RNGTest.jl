@@ -105,7 +105,7 @@ module RNGTest
 
     # RNGGenerator struct
     mutable struct Unif01
-        ptr::Ptr{Cvoid}
+        ptr::Ptr{Void}
         gentype::Type
         name::String
         function Unif01(f::Function, genname)
