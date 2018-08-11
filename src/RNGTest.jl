@@ -1,10 +1,10 @@
-__precompile__()
-
 module RNGTest
 
     using Random
 
     import Base: convert, getindex, pointer
+
+    import Distributed: pmap
 
     include("../deps/deps.jl")
 
