@@ -6,6 +6,8 @@ module RNGTest
 
     import Base: convert, getindex, pointer
 
+    import Distributed: pmap
+
     include("../deps/deps.jl")
 
     swrite = Ref{Ptr{Ptr{Bool}}}()
