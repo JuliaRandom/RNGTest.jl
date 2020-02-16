@@ -306,7 +306,7 @@ module RNGTest
     # Npairs
     struct Snpair_StatArray
         data::Vector{Float64}
-        Snpair_StatArray() = new(Vector{Float64}(11))
+        Snpair_StatArray() = new(Vector{Float64}(undef, 11))
     end
     function getindex(obj::Snpair_StatArray, i::Symbol)
         i == :NP && return obj.data[1]
