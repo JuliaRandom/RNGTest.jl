@@ -1,7 +1,6 @@
 # The Crush test suite of l'Ecuyer for Julia
 
-[![RNGTest](http://pkg.julialang.org/badges/RNGTest_0.6.svg)](http://pkg.julialang.org/?pkg=RNGTest&ver=0.)
-[![Build Status](https://travis-ci.org/andreasnoack/RNGTest.jl.svg?branch=master)](https://travis-ci.org/andreasnoack/RNGTest.jl)
+[![Build Status](https://travis-ci.com/andreasnoack/RNGTest.jl.svg?branch=master)](https://travis-ci.com/andreasnoack/RNGTest.jl)
 
 The package is a Julia interface to the test suite TestU01 of Pierre l'Ecuyer. All the tests included in the SmallCrush and BigCrush test batteries can be called as Julia functions.
 The first argument to the test function must be either
