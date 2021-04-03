@@ -456,69 +456,87 @@ module RNGTest
     #########
     ## smarsa
     function smarsa_BirthdaySpacings(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer, p::Integer)
-         unif01 = Unif01(gen, "")
-         sres = ResPoisson()
-         ccall((:smarsa_BirthdaySpacings, libtestu01), Cvoid,
-            (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-              Cint, Clong, Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, d, t, p)
-         delete(unif01)
-         return pvalue(sres)
+        unif01 = Unif01(gen, "")
+        sres = ResPoisson()
+        try
+            ccall((:smarsa_BirthdaySpacings, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Clong, Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, d, t, p)
+        finally
+            delete(unif01)
+        end
+        return pvalue(sres)
     end
     function smarsa_GCD(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer)
-         unif01 = Unif01(gen, "")
-         sres = MarsaRes2(N)
-         ccall((:smarsa_GCD, libtestu01), Cvoid,
-            (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-              Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, s)
-         delete(unif01)
-         return pvalue(sres)
+        unif01 = Unif01(gen, "")
+        sres = MarsaRes2(N)
+        try
+            ccall((:smarsa_GCD, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, s)
+        finally
+            delete(unif01)
+        end
+        return pvalue(sres)
     end
     function smarsa_CollisionOver(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
-         unif01 = Unif01(gen, "")
-         sres = MarsaRes()
-         ccall((:smarsa_CollisionOver, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-              Cint, Clong, Cint),
+        unif01 = Unif01(gen, "")
+        sres = MarsaRes()
+        try
+            ccall((:smarsa_CollisionOver, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Clong, Cint),
              unif01.ptr, sres.ptr, N, n,
              r, d, t)
-         delete(unif01)
-         return pvalue(sres)
+        finally
+            delete(unif01)
+        end
+        return pvalue(sres)
     end
     function smarsa_Savir2(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, m::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
-        ccall((:smarsa_Savir2, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Clong, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, m, t)
-        delete(unif01)
+        try
+            ccall((:smarsa_Savir2, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Clong, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, m, t)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function smarsa_SerialOver(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
-         unif01 = Unif01(gen, "")
-         sres = ResBasic()
-         ccall((:smarsa_SerialOver, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-              Cint, Clong, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, d, t)
-         delete(unif01)
-         return pvalue(sres)
+        unif01 = Unif01(gen, "")
+        sres = ResBasic()
+        try
+            ccall((:smarsa_SerialOver, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Clong, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, d, t)
+        finally
+            delete(unif01)
+        end
+        return pvalue(sres)
     end
     function smarsa_MatrixRank(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer, k::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
-        ccall((:smarsa_MatrixRank, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint, Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, s, L, k)
-        delete(unif01)
+        try
+            ccall((:smarsa_MatrixRank, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint, Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, s, L, k)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
 
@@ -526,89 +544,113 @@ module RNGTest
     function sknuth_Collision(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = KnuthRes2()
-        ccall((:sknuth_Collision, libtestu01), Cvoid,
-            (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                Cint, Clong, Cint),
-            unif01.ptr, sres.ptr, N, n,
-            r, d, t)
-        delete(unif01)
-         return pvalue(sres)
+        try
+            ccall((:sknuth_Collision, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Clong, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, d, t)
+        finally
+            delete(unif01)
+        end
+        return pvalue(sres)
     end
     function sknuth_CollisionPermut(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = KnuthRes2()
-        ccall((:sknuth_CollisionPermut, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, t)
-        delete(unif01)
+        try
+            ccall((:sknuth_CollisionPermut, libtestu01), Cvoid,
+            (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                Cint, Cint),
+            unif01.ptr, sres.ptr, N, n,
+            r, t)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sknuth_CouponCollector(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
-        ccall((:sknuth_CouponCollector, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, d)
-        delete(unif01)
+        try
+            ccall((:sknuth_CouponCollector, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, d)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sknuth_Gap(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, Alpha::Real, Beta::Real)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
-        ccall((:sknuth_Gap, libtestu01), Cvoid,
-            (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                Cint, Float64, Float64),
-            unif01.ptr, sres.ptr, N, n,
-            r, Alpha, Beta)
-        delete(unif01)
+        try
+            ccall((:sknuth_Gap, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Float64, Float64),
+                unif01.ptr, sres.ptr, N, n,
+                r, Alpha, Beta)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sknuth_MaxOft(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = KnuthRes1(N)
-        ccall((:sknuth_MaxOft, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, d, t)
-        delete(unif01)
+        try
+            ccall((:sknuth_MaxOft, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, d, t)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sknuth_Permutation(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
-        ccall((:sknuth_Permutation, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, t)
-        delete(unif01)
+        try
+            ccall((:sknuth_Permutation, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, t)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sknuth_Run(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, up::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
-        ccall((:sknuth_Run, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, up)
-        delete(unif01)
+        try
+            ccall((:sknuth_Run, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, up)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sknuth_SimpPoker(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, d::Integer, k::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
-        ccall((:sknuth_SimpPoker, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, d, k)
-        delete(unif01)
+        try
+            ccall((:sknuth_SimpPoker, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, d, k)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
 
@@ -616,67 +658,85 @@ module RNGTest
     function svaria_AppearanceSpacings(gen::RNGGenerator, N::Integer, Q::Integer, K::Integer, r::Integer, s::Integer, L::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
-        ccall((:svaria_AppearanceSpacings, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Clong, Cint, Cint, Cint),
-             unif01.ptr, sres.ptr, N, Q,
-             K, r, s, L)
-        delete(unif01)
+        try
+            ccall((:svaria_AppearanceSpacings, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Clong, Cint, Cint, Cint),
+                unif01.ptr, sres.ptr, N, Q,
+                K, r, s, L)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function svaria_SampleProd(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, t::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
-        ccall((:svaria_SampleProd, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, t)
-        delete(unif01)
+        try
+            ccall((:svaria_SampleProd, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, t)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function svaria_SampleMean(gen::RNGGenerator, N::Integer, n::Integer, r::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
-        ccall((:svaria_SampleMean, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r)
-        delete(unif01)
+        try
+            ccall((:svaria_SampleMean, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function svaria_SampleCorr(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, k::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
-        ccall((:svaria_SampleCorr, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, k)
-        delete(unif01)
+        try
+            ccall((:svaria_SampleCorr, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, k)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function svaria_SumCollector(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, g::Float64)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
-        ccall((:svaria_SumCollector, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cdouble),
-             unif01.ptr, sres.ptr, N, n,
-             r, g)
-        delete(unif01)
+        try
+            ccall((:svaria_SumCollector, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cdouble),
+                unif01.ptr, sres.ptr, N, n,
+                r, g)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function svaria_WeightDistrib(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, k::Integer, alpha::Real, beta::Real)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
-        ccall((:svaria_WeightDistrib, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Clong, Float64, Float64),
-             unif01.ptr, sres.ptr, N, n,
-             r, k, alpha, beta)
-        delete(unif01)
+        try
+            ccall((:svaria_WeightDistrib, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Clong, Float64, Float64),
+                unif01.ptr, sres.ptr, N, n,
+                r, k, alpha, beta)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
 
@@ -684,78 +744,99 @@ module RNGTest
     function sstring_AutoCor(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, d::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
-        ccall((:sstring_AutoCor, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, s, d)
-        delete(unif01)
+        try
+            ccall((:sstring_AutoCor, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, s, d)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sstring_HammingCorr(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer)
         unif01 = Unif01(gen, "")
         sres = StringRes()
-        ccall((:sstring_HammingCorr, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, s, L)
-        delete(unif01)
+        try
+            ccall((:sstring_HammingCorr, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, s, L)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sstring_HammingIndep(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer, d::Integer)
         unif01 = Unif01(gen, "")
         sres = StringRes()
-        ccall((:sstring_HammingIndep, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint, Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, s, L, d)
-        delete(unif01)
+        try
+            ccall((:sstring_HammingIndep, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint, Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, s, L, d)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sstring_HammingWeight2(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
-        ccall((:sstring_HammingWeight2, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-              Cint, Cint, Clong),
-             unif01.ptr, sres.ptr, N, n,
-             r, s, L)
-        delete(unif01)
+        try
+            ccall((:sstring_HammingWeight2, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint, Clong),
+                unif01.ptr, sres.ptr, N, n,
+                r, s, L)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sstring_LongestHeadRun(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer)
         unif01 = Unif01(gen, "")
         sres = StringRes2(N)
-        ccall((:sstring_LongestHeadRun, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-              Cint, Cint, Clong),
-             unif01.ptr, sres.ptr, N, n,
-             r, s, L)
-        delete(unif01)
+        try
+            ccall((:sstring_LongestHeadRun, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint, Clong),
+                unif01.ptr, sres.ptr, N, n,
+                r, s, L)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sstring_PeriodsInStrings(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer)
         unif01 = Unif01(gen, "")
         sres = ResChi2(N)
-        ccall((:sstring_PeriodsInStrings, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, s)
-        delete(unif01)
+        try
+            ccall((:sstring_PeriodsInStrings, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, s)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function sstring_Run(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer)
         unif01 = Unif01(gen, "")
         sres = StringRes3(N)
-        ccall((:sstring_Run, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-                 Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, s)
-        delete(unif01)
+        try
+            ccall((:sstring_Run, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, s)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
 
@@ -764,12 +845,15 @@ module RNGTest
     function swalk_RandomWalk1(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L0::Integer, L1::Integer)
         unif01 = Unif01(gen, "")
         sres = WalkRes(N)
-        ccall((:swalk_RandomWalk1, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-              Cint, Cint, Clong, Clong),
-             unif01.ptr, sres.ptr, N, n,
-             r, s, L0, L1)
-        delete(unif01)
+        try
+            ccall((:swalk_RandomWalk1, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint, Clong, Clong),
+                unif01.ptr, sres.ptr, N, n,
+                r, s, L0, L1)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
 
@@ -777,12 +861,15 @@ module RNGTest
     function snpair_ClosePairs(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, t::Integer, p::Integer, m::Integer)
         unif01 = Unif01(gen, "")
         sres = NpairRes(N)
-        ccall((:snpair_ClosePairs, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-              Cint, Cint, Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, t, p, m)
-        delete(unif01)
+        try
+            ccall((:snpair_ClosePairs, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint, Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, t, p, m)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
 
@@ -790,23 +877,29 @@ module RNGTest
     function scomp_LempelZiv(gen::RNGGenerator, N::Integer, k::Integer, r::Integer, s::Integer)
         unif01 = Unif01(gen, "")
         sres = ResBasic()
-        ccall((:scomp_LempelZiv, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Cint,
-              Cint, Cint),
-             unif01.ptr, sres.ptr, N, k,
-             r, s)
-        delete(unif01)
+        try
+            ccall((:scomp_LempelZiv, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Cint,
+                    Cint, Cint),
+                unif01.ptr, sres.ptr, N, k,
+                r, s)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
     function scomp_LinearComp(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer)
         unif01 = Unif01(gen, "")
         sres = CompRes(N)
-        ccall((:scomp_LinearComp, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
-              Cint, Cint),
-             unif01.ptr, sres.ptr, N, n,
-             r, s)
-        delete(unif01)
+        try
+            ccall((:scomp_LinearComp, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Clong,
+                    Cint, Cint),
+                unif01.ptr, sres.ptr, N, n,
+                r, s)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
 
@@ -814,12 +907,15 @@ module RNGTest
     function sspectral_Fourier3(gen::RNGGenerator, N::Integer, k::Integer, r::Integer, s::Integer)
         unif01 = Unif01(gen, "")
         sres = SpectralRes()
-        ccall((:sspectral_Fourier3, libtestu01), Cvoid,
-             (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Cint,
-              Cint, Cint),
-             unif01.ptr, sres.ptr, N, k,
-             r, s)
-        delete(unif01)
+        try
+            ccall((:sspectral_Fourier3, libtestu01), Cvoid,
+                (Ptr{Cvoid}, Ptr{Cvoid}, Clong, Cint,
+                    Cint, Cint),
+                unif01.ptr, sres.ptr, N, k,
+                r, s)
+        finally
+            delete(unif01)
+        end
         return pvalue(sres)
     end
 
@@ -830,8 +926,12 @@ module RNGTest
         @eval begin
             function $(fnm)(f::RNGGenerator, fname::String)
                 unif01 = Unif01(f, fname)
-                ccall(($(string("bbattery_", snm)), libtestu01), Cvoid, (Ptr{Cvoid},), unif01.ptr)
-                delete(unif01)
+                try
+                    ccall(($(string("bbattery_", snm)), libtestu01),
+                        Cvoid, (Ptr{Cvoid},), unif01.ptr)
+                finally
+                    delete(unif01)
+                end
             end
             $(fnm)(f::RNGGenerator) = $(fnm)(f::RNGGenerator, "")
         end
