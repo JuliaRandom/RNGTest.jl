@@ -3,10 +3,8 @@ module RNGTest
     using Random
 
     import Base: convert, getindex, pointer
-
     import Distributed: pmap
-
-    include("../deps/deps.jl")
+    import TestU01_jll: libtestu01, libtestu01extractors
 
     swrite = Ref{Ptr{Ptr{Bool}}}()
 
