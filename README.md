@@ -1,6 +1,7 @@
 # The Crush test suite of l'Ecuyer for Julia
 
 [![CI](https://github.com/JuliaRandom/RNGTest.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaRandom/RNGTest.jl/actions/workflows/CI.yml)
+[![codecov](https://codecov.io/gh/JuliaRandom/RNGTest.jl/branch/master/graph/badge.svg?token=6FFGnqkZzu)](https://codecov.io/gh/JuliaRandom/RNGTest.jl)
 
 The package is a Julia interface to the test suite TestU01 of Pierre l'Ecuyer. All the tests included in the SmallCrush and BigCrush test batteries can be called as Julia functions.
 The first argument to the test function must be either
