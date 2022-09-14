@@ -796,6 +796,9 @@ module RNGTest
         return pvalue(sres)
     end
     function sstring_LongestHeadRun(gen::RNGGenerator, N::Integer, n::Integer, r::Integer, s::Integer, L::Integer)
+        if L ÷ s * s < 1000
+            throw(ArgumentError("argument L is too small. `L ÷ s * s` must be at least 1000 but was $(L ÷ s * s)"))
+        end
         unif01 = Unif01(gen, "")
         sres = StringRes2(N)
         try
