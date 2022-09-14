@@ -1,14 +1,13 @@
 name = "RNGTest"
 uuid = "97cc5700-e6cb-5ca1-8fb2-7f6b45264ecd"
-version = "1.5.1"
+version = "1.5.2"
 
 [deps]
-BinaryProvider = "b99e7846-7c00-51b0-8f62-c81ae34c0232"
 Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TestU01_jll = "1f073b57-2743-565b-a723-478df9911235"
 
 [compat]
-julia = "1"
-BinaryProvider = "0.5"
+julia = "1.6"
