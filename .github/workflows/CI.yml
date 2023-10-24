@@ -3,6 +3,7 @@ env:
   MY_TEST_VAR1: ${{ 'true' && 'Y' || 'N' }}
   MY_TEST_VAR2: ${{ 'false' && 'Y' || 'N' }}
   MY_TEST_VAR3: ${{ 'hello!' && 'Y' || 'N' }}
+  MY_TEST_VAR4: ${{ '' && 'Y' || 'N' }}
 on:
   - push
   - pull_request
