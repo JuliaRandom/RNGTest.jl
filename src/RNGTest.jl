@@ -964,7 +964,11 @@ module RNGTest
                       g->smarsa_CollisionOver(g, 30, 2*10^7, 27, 8, 14),
                       g->smarsa_CollisionOver(g, 30, 2*10^7, 0, 4, 21),
                       g->smarsa_CollisionOver(g, 30, 2*10^7, 28, 4, 21),
-                      g->smarsa_BirthdaySpacings(g, 100, 10^7, 0, 2^31, 2, 1),
+                    if typemax(Clong) < 2^31  # On Windows Clong is defined as Int32
+                      g->smarsa_BirthdaySpacings(g, 250, 4*10^6, 0, 2^30, 2, 1)
+                    else
+                      g->smarsa_BirthdaySpacings(g, 100, 10^7, 0, 2^31, 2, 1)
+                    end,
                       g->smarsa_BirthdaySpacings(g, 20, 2*10^7, 0, 2^21, 3, 1),
                       g->smarsa_BirthdaySpacings(g, 20, 3*10^7, 14, 2^16, 4, 1),
                       g->smarsa_BirthdaySpacings(g, 20, 2*10^7, 0, 2^9, 7, 1),
