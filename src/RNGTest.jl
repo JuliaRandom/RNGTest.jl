@@ -33,7 +33,7 @@ module RNGTest
         rng::RNG
         cache::Vector{T}
         fillarray::Bool
-        vals::Vector{UInt32}
+        vals::Union{Vector{UInt32}, Base.ReinterpretArray{UInt32, 1, T, Vector{T}, false}}
         idx::Int
     end
 
@@ -45,7 +45,7 @@ module RNGTest
         end
         cache = Vector{T}(undef, cache_size)
         fillcache(WrappedRNG{T, RNG}(rng, cache, fillarray,
-            unsafe_wrap(Array, convert(Ptr{UInt32}, pointer(cache)), sizeof(cache)÷sizeof(UInt32)),
+            reinterpret(UInt32, cache),
             0)) # 0 is a dummy value, which will be set correctly by fillcache
     end
 
