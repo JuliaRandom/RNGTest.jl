@@ -8,6 +8,13 @@ pval = 0.001
 @testset "smarsa" begin
     @testset "BirthdaySpacings" begin
         @test RNGTest.smarsa_BirthdaySpacings(f, 1, 5000000, 0, 1073741824, 2, 1) > pval
+
+        # Issue28: smarsa_BirthdaySpacing called in bigcrushJulia
+        if typemax(Clong) < 2^31  # On Windows Clong is defined as Int32
+            @test RNGTest.smarsa_BirthdaySpacings(f, 250, 4*10^6, 0, 2^30, 2, 1) > pval
+        else
+            @test RNGTest.smarsa_BirthdaySpacings(f, 100, 10^7, 0, 2^31, 2, 1) > pval
+        end
     end
 
     @testset "MatrixRank" begin
