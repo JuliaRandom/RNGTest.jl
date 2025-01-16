@@ -166,7 +166,11 @@ end
     pids = addprocs()
     @everywhere using RNGTest
     for T in (UInt32, UInt64, Float64)
-        rng = RNGTest.wrap(Xoshiro(), T)
+        if isdefined(Random, :Xoshiro)
+            rng = RNGTest.wrap(Xoshiro(), T)
+        else 
+            rng = RNGTest.wrap(MersenneTwister(), T)
+        end
         results = RNGTest.smallcrushJulia(rng)
         @test all(ps -> all(>(pval), ps), results)
     end
