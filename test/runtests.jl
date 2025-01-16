@@ -1,6 +1,7 @@
 using Test
 using RNGTest
 using Random
+using Distributed
 
 f = rand
 pval = 0.001
