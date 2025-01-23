@@ -1,6 +1,7 @@
 using Test
 using RNGTest
 using Random
+using Distributed
 
 f = rand
 pval = 0.001
@@ -166,4 +167,19 @@ end
     rng = RNGTest.wrap(MersenneTwister(0), UInt32)
     RNGTest.smallcrushTestU01(rng)
     @test all(t -> t > pval, mapreduce(s -> [s...], vcat, RNGTest.smallcrushJulia(rng)))
+end
+
+@testset "Distributed smallcrushJulia" begin
+    pids = addprocs()
+    @everywhere using RNGTest
+    for T in (UInt32, UInt64, Float64)
+        if isdefined(Random, :Xoshiro)
+            rng = RNGTest.wrap(Xoshiro(), T)
+        else 
+            rng = RNGTest.wrap(MersenneTwister(), T)
+        end
+        results = RNGTest.smallcrushJulia(rng)
+        @test all(ps -> all(>(pval), ps), results)
+    end
+    rmprocs(pids)
 end
