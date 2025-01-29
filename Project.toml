@@ -1,6 +1,6 @@
 name = "RNGTest"
 uuid = "97cc5700-e6cb-5ca1-8fb2-7f6b45264ecd"
-version = "1.6.0"
+version = "1.6.1"
 
 [deps]
 Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
