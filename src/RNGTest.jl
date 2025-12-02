@@ -13,94 +13,94 @@ module RNGTest
         unsafe_store!(swrite[], 0, 1)
     end
 
-    # WrappedRNG
+    # # WrappedRNG
 
-    # TestU01 expects a standard function as input (created via
-    # cfunction here). When one wants to test the random stream of
-    # an AbstractRNG, a little more work has to be done before
-    # passing it to TestU01. The type WrappedRNG wraps an
-    # AbstractRNG into an object which knows which type of random
-    # numbers to produce, and also whether the scalar or array API
-    # should be used (this is useful when different algorithms are
-    # used for each case, which results in different streams which
-    # should be tested separately). Such an object can then be
-    # passed to the Unif01 constructor.
+    # # TestU01 expects a standard function as input (created via
+    # # cfunction here). When one wants to test the random stream of
+    # # an AbstractRNG, a little more work has to be done before
+    # # passing it to TestU01. The type WrappedRNG wraps an
+    # # AbstractRNG into an object which knows which type of random
+    # # numbers to produce, and also whether the scalar or array API
+    # # should be used (this is useful when different algorithms are
+    # # used for each case, which results in different streams which
+    # # should be tested separately). Such an object can then be
+    # # passed to the Unif01 constructor.
 
-    const TestableNumbers = Union{Int8, UInt8, Int16, UInt16, Int32, UInt32,
-        Int64, UInt64, Int128, UInt128, Float16, Float32, Float64}
+    # const TestableNumbers = Union{Int8, UInt8, Int16, UInt16, Int32, UInt32,
+    #     Int64, UInt64, Int128, UInt128, Float16, Float32, Float64}
 
-    mutable struct WrappedRNG{T<:TestableNumbers, RNG<:AbstractRNG}
-        rng::RNG
-        cache::Vector{T}
-        fillarray::Bool
-        vals::Union{Vector{UInt32}, Base.ReinterpretArray{UInt32, 1, T, Vector{T}, false}}
-        idx::Int
-    end
+    # mutable struct WrappedRNG{T<:TestableNumbers, RNG<:AbstractRNG}
+    #     rng::RNG
+    #     cache::Vector{T}
+    #     fillarray::Bool
+    #     vals::Union{Vector{UInt32}, Base.ReinterpretArray{UInt32, 1, T, Vector{T}, false}}
+    #     idx::Int
+    # end
 
-    function WrappedRNG(rng::RNG, ::Type{T}, fillarray = true, cache_size = 3*2^11 ÷ sizeof(T)) where {RNG, T}
-        if T <: Integer && cache_size*sizeof(T) % sizeof(UInt32) != 0
-            error("cache_size must be a multiple of $(Int(4/sizeof(T))) (for type $T)")
-        elseif T === Float16 && cache_size % 6 != 0 || T === Float32 && cache_size % 3 != 0
-            error("cache_size must be a multiple of 3 (resp. 6) for Float32 (resp. Float16)")
-        end
-        cache = Vector{T}(undef, cache_size)
-        fillcache(WrappedRNG{T, RNG}(rng, cache, fillarray,
-            reinterpret(UInt32, cache),
-            0)) # 0 is a dummy value, which will be set correctly by fillcache
-    end
+    # function WrappedRNG(rng::RNG, ::Type{T}, fillarray = true, cache_size = 3*2^11 ÷ sizeof(T)) where {RNG, T}
+    #     if T <: Integer && cache_size*sizeof(T) % sizeof(UInt32) != 0
+    #         error("cache_size must be a multiple of $(Int(4/sizeof(T))) (for type $T)")
+    #     elseif T === Float16 && cache_size % 6 != 0 || T === Float32 && cache_size % 3 != 0
+    #         error("cache_size must be a multiple of 3 (resp. 6) for Float32 (resp. Float16)")
+    #     end
+    #     cache = Vector{T}(undef, cache_size)
+    #     fillcache(WrappedRNG{T, RNG}(rng, cache, fillarray,
+    #         reinterpret(UInt32, cache),
+    #         0)) # 0 is a dummy value, which will be set correctly by fillcache
+    # end
 
-    # The ability to play with the cache size and the fillarray option is for advanced uses,
-    # when one wants to test different code path of the particular RNG implementations, like
-    # MersenneTwister from Base.
-    # For now let's document only the type parameter in the wrap function:
-    wrap(rng::AbstractRNG, ::Type{T}) where {T<:TestableNumbers} = WrappedRNG(rng, T)
+    # # The ability to play with the cache size and the fillarray option is for advanced uses,
+    # # when one wants to test different code path of the particular RNG implementations, like
+    # # MersenneTwister from Base.
+    # # For now let's document only the type parameter in the wrap function:
+    # wrap(rng::AbstractRNG, ::Type{T}) where {T<:TestableNumbers} = WrappedRNG(rng, T)
 
-    function fillcache(g::WrappedRNG{T}) where T
-        if g.fillarray
-            rand!(g.rng, g.cache)
-        else
-            for i = 1:length(g.cache)
-                @inbounds g.cache[i] = rand(g.rng, T)
-            end
-        end
-        g.idx = 0
-        return g
-    end
+    # function fillcache(g::WrappedRNG{T}) where T
+    #     if g.fillarray
+    #         rand!(g.rng, g.cache)
+    #     else
+    #         for i = 1:length(g.cache)
+    #             @inbounds g.cache[i] = rand(g.rng, T)
+    #         end
+    #     end
+    #     g.idx = 0
+    #     return g
+    # end
 
-    function (g::WrappedRNG{T})() where T<:Integer
-        g.idx+1 > length(g.vals) && fillcache(g)
-        @inbounds return g.vals[g.idx+=1]
-    end
+    # function (g::WrappedRNG{T})() where T<:Integer
+    #     g.idx+1 > length(g.vals) && fillcache(g)
+    #     @inbounds return g.vals[g.idx+=1]
+    # end
 
-    function (g::WrappedRNG{Float64})()
-        g.idx+1 > length(g.cache) && fillcache(g)
-        @inbounds return g.cache[g.idx+=1]
-    end
+    # function (g::WrappedRNG{Float64})()
+    #     g.idx+1 > length(g.cache) && fillcache(g)
+    #     @inbounds return g.cache[g.idx+=1]
+    # end
 
-    function (g::WrappedRNG{Float32})()
-        g.idx+3 > length(g.cache) && fillcache(g)
-        @inbounds begin
-            f = Float64(g.cache[g.idx+1])
-            # a Float32 has 24 bits of precision, but only 23 bit of entropy
-            f += Float64(g.cache[g.idx+2])/exp2(23)
-            f += Float64(g.cache[g.idx+=3])/exp2(46)
-            return f % 1.0
-        end
-    end
+    # function (g::WrappedRNG{Float32})()
+    #     g.idx+3 > length(g.cache) && fillcache(g)
+    #     @inbounds begin
+    #         f = Float64(g.cache[g.idx+1])
+    #         # a Float32 has 24 bits of precision, but only 23 bit of entropy
+    #         f += Float64(g.cache[g.idx+2])/exp2(23)
+    #         f += Float64(g.cache[g.idx+=3])/exp2(46)
+    #         return f % 1.0
+    #     end
+    # end
 
-    function (g::WrappedRNG{Float16})()
-        g.idx+6 > length(g.cache) && fillcache(g)
-        @inbounds begin
-            f = Float64(g.cache[g.idx+1])
-            # a Float16 has 10 bits of entropy
-            f += Float64(g.cache[g.idx+2])/exp2(10)
-            f += Float64(g.cache[g.idx+3])/exp2(20)
-            f += Float64(g.cache[g.idx+4])/exp2(30)
-            f += Float64(g.cache[g.idx+5])/exp2(40)
-            f += Float64(g.cache[g.idx+=6])/exp2(50)
-            return f % 1.0
-        end
-    end
+    # function (g::WrappedRNG{Float16})()
+    #     g.idx+6 > length(g.cache) && fillcache(g)
+    #     @inbounds begin
+    #         f = Float64(g.cache[g.idx+1])
+    #         # a Float16 has 10 bits of entropy
+    #         f += Float64(g.cache[g.idx+2])/exp2(10)
+    #         f += Float64(g.cache[g.idx+3])/exp2(20)
+    #         f += Float64(g.cache[g.idx+4])/exp2(30)
+    #         f += Float64(g.cache[g.idx+5])/exp2(40)
+    #         f += Float64(g.cache[g.idx+=6])/exp2(50)
+    #         return f % 1.0
+    #     end
+    # end
 
 
     # RNGGenerator struct
@@ -119,17 +119,17 @@ module RNGTest
             return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Cvoid}, (Ptr{UInt8}, Ptr{Cvoid}), genname, cf), Float64, genname)
         end
 
-        function Unif01(g::WrappedRNG{T}, genname) where {T<:AbstractFloat}
-            # we assume that g being created out of an AbstractRNG, it produces Floats in the interval [0,1)
-            cf = @cfunction($g, Float64, ())
-            return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Cvoid}, (Ptr{UInt8}, Ptr{Cvoid}), genname, cf), Float64, genname)
-        end
+        # function Unif01(g::WrappedRNG{T}, genname) where {T<:AbstractFloat}
+        #     # we assume that g being created out of an AbstractRNG, it produces Floats in the interval [0,1)
+        #     cf = @cfunction($g, Float64, ())
+        #     return new(ccall((:unif01_CreateExternGen01, libtestu01), Ptr{Cvoid}, (Ptr{UInt8}, Ptr{Cvoid}), genname, cf), Float64, genname)
+        # end
 
-        function Unif01(g::WrappedRNG{T}, genname) where {T<:Integer}
-            @assert Cuint === UInt32
-            cf = @cfunction($g, UInt32, ())
-            return new(ccall((:unif01_CreateExternGenBits, libtestu01), Ptr{Cvoid}, (Ptr{UInt8}, Ptr{Cvoid}), genname, cf), UInt32, genname)
-        end
+        # function Unif01(g::WrappedRNG{T}, genname) where {T<:Integer}
+        #     @assert Cuint === UInt32
+        #     cf = @cfunction($g, UInt32, ())
+        #     return new(ccall((:unif01_CreateExternGenBits, libtestu01), Ptr{Cvoid}, (Ptr{UInt8}, Ptr{Cvoid}), genname, cf), UInt32, genname)
+        # end
     end
     function delete(obj::Unif01)
             if obj.gentype === Float64
@@ -139,7 +139,10 @@ module RNGTest
             end
     end
 
-    const RNGGenerator = Union{Function, WrappedRNG}
+    const RNGGenerator = Union{
+        Function,
+        # WrappedRNG
+    }
 
     # Result types
 
